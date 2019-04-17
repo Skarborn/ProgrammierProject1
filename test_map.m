@@ -1,5 +1,6 @@
 window = figure('Name','Fenster');
 axes_ding = axes(window);
+set(gcf,'position',[100 100 1000 800]);
 
 % Oldenburg coords
 longitudinal_min = 8.18;
