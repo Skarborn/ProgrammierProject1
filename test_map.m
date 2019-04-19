@@ -1,12 +1,17 @@
+%% rumprobieren
 % Karte mit Sendemasten finden und gucken, wie man diese bestimmen kann!
 
 load('celldata.mat')
 x = celldata.lon;
 y = celldata.lat;
-dist = celldata.distanceInM;
+distance = celldata.distanceInM;
+networkCode = celldata.networkCode;
+network = celldata.network;
 
 window = figure('Name','Fenster');
 axes_ding = axes(window);
+
+% Suchkriterien (logcal vectors, die anschliessend eingesetzt werden)
 
 % Oldenburg coords
 longitudinal_min = 8.18;
@@ -14,13 +19,23 @@ longitudinal_max = 8.28;
 lateral_min = 53.11;
 lateral_max = 53.18;
 
+criteria_network = 'GSM';
+criteria_networkCode = 2;
+
+
+% Nach Suchkriterien relevante Daten
+relevant_coords = longitudinal_min <= x & longitudinal_max >= x & ...
+                lateral_min <= y & lateral_max >= y ;
+relevant_network = (network==criteria_network);
+relevant_networkCode = (networkCode == criteria_networkCode);
+relevant_data =  relevant_coords &...
+                relevant_networkCode &...
+                relevant_network;
+
 % Alle Punkte, die in Oldenburg liegen herausfiltern
-x_ol = x(       longitudinal_min <= x & longitudinal_max >= x & ...
-                lateral_min <= y & lateral_max >= y );
-y_ol = y(       longitudinal_min <= x & longitudinal_max >= x & ...
-                lateral_min <= y & lateral_max >= y );
-dist_ol = dist( longitudinal_min <= x & longitudinal_max >= x & ...
-                lateral_min <= y & lateral_max >= y );
+x_ol = x(relevant_data);
+y_ol = y(relevant_data);
+dist_ol = distance(relevant_data);
 
 x_ol_nah = x_ol(dist_ol<=1000);
 x_ol_fern = x_ol(dist_ol>1000);
@@ -37,3 +52,5 @@ my_coords = struct(...
 my_map = Map(my_coords,'osm',axes_ding);
 hold on
 plot(x_ol_nah,y_ol_nah,'b.',x_ol_fern,y_ol_fern,'c.')
+title(['Suchkriterien: Netzwerk: ',criteria_network,...
+    ', Netzwerkcode: ',num2str(criteria_networkCode)])
