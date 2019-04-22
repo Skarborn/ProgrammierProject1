@@ -6,11 +6,12 @@ classdef netVision < handle
         network
         networkCode
         dataBase
+        my_map
         
-        edit1
-        edit2
-        edit3
-        edit4
+        editLongMin
+        editLongMax
+        editLatMin
+        editLatMax
     end
     methods
         function obj = netVision()
@@ -31,43 +32,47 @@ classdef netVision < handle
             ax = uiaxes(grid);
             ax.Layout.Row = [1 6];
             ax.Layout.Column = [3 8];
-            my_map = Map(my_coords,'osm',ax);
+            obj.my_map = Map(my_coords,'osm',ax);
             
-            obj.edit1 = uieditfield(grid,"numeric");
-            obj.edit1.Limits = [0 360];
-            obj.edit1.Value = longitudinal_min;
-            obj.edit1.ValueChangedFcn = @obj.changeCoords;
-            obj.edit1.Layout.Row = 1;
-            obj.edit1.Layout.Column = 1;
-            obj.edit1.Tooltip = "min longitudinal";
+            obj.editLongMin = uieditfield(grid,"numeric");
+            obj.editLongMin.Limits = [0 360];
+            obj.editLongMin.Value = longitudinal_min;
+            obj.editLongMin.ValueChangedFcn = @obj.changeCoords;
+            obj.editLongMin.Layout.Row = 1;
+            obj.editLongMin.Layout.Column = 1;
+            obj.editLongMin.Tooltip = "min longitudinal";
             
-            obj.edit2 = uieditfield(grid,"numeric");
-            obj.edit2.Limits = [0 360];
-            obj.edit2.Value = longitudinal_max;
-            obj.edit2.ValueChangedFcn = @obj.changeCoords;
-            obj.edit2.Layout.Row = 1;
-            obj.edit2.Layout.Column = 2;
-            obj.edit2.Tooltip = "max longitudinal";
+            obj.editLongMax = uieditfield(grid,"numeric");
+            obj.editLongMax.Limits = [0 360];
+            obj.editLongMax.Value = longitudinal_max;
+            obj.editLongMax.ValueChangedFcn = @obj.changeCoords;
+            obj.editLongMax.Layout.Row = 1;
+            obj.editLongMax.Layout.Column = 2;
+            obj.editLongMax.Tooltip = "max longitudinal";
             
-            obj.edit3 = uieditfield(grid,"numeric");
-            obj.edit3.Limits = [0 360];
-            obj.edit3.Value = lateral_min;
-            obj.edit3.ValueChangedFcn = @obj.changeCoords;
-            obj.edit3.Layout.Row = 2;
-            obj.edit3.Layout.Column = 1;
-            obj.edit3.Tooltip = "min lateral";
+            obj.editLatMin = uieditfield(grid,"numeric");
+            obj.editLatMin.Limits = [0 360];
+            obj.editLatMin.Value = lateral_min;
+            obj.editLatMin.ValueChangedFcn = @obj.changeCoords;
+            obj.editLatMin.Layout.Row = 2;
+            obj.editLatMin.Layout.Column = 1;
+            obj.editLatMin.Tooltip = "min lateral";
             
-            obj.edit4 = uieditfield(grid,"numeric");
-            obj.edit4.Limits = [0 360];
-            obj.edit4.Value = lateral_max;
-            obj.edit4.ValueChangedFcn = @obj.changeCoords;
-            obj.edit4.Layout.Row = 2;
-            obj.edit4.Layout.Column = 2;
-            obj.edit4.Tooltip = "max lateral";
+            obj.editLatMax = uieditfield(grid,"numeric");
+            obj.editLatMax.Limits = [0 360];
+            obj.editLatMax.Value = lateral_max;
+            obj.editLatMax.ValueChangedFcn = @obj.changeCoords;
+            obj.editLatMax.Layout.Row = 2;
+            obj.editLatMax.Layout.Column = 2;
+            obj.editLatMax.Tooltip = "max lateral";
         end
         
         function changeCoords(obj, source, ~)
-            disp(obj.edit1.Value * obj.edit2.Value);
+            obj.my_map.coords = struct(...
+                    "minLon", obj.editLongMin.Value, ...
+                    "maxLon", obj.editLongMax.Value, ...
+                    "minLat", obj.editLatMin.Value, ...
+                    "maxLat", obj.editLatMax.Value);
         end
     end
 end
