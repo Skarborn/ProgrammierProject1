@@ -1,10 +1,8 @@
 classdef netVision < handle
     properties
         fig
-        x_lim
-        y_lim
-        network
-        networkCode
+        line
+        
         dataBase
         my_map
         
@@ -15,8 +13,10 @@ classdef netVision < handle
     end
     methods
         function obj = netVision()
+            % read in celldata
             obj.dataBase = load("celldata.mat");
             
+            % coords to generate map
             longitudinal_min = 8.18;
             longitudinal_max = 8.28;
             lateral_min = 53.11;
@@ -27,17 +27,20 @@ classdef netVision < handle
                 "minLat", lateral_min, ...
                 "maxLat", lateral_max);
             
+            % generate figure and grid used for GUI
             obj.fig = uifigure("Name","netVision");
             grid = uigridlayout(obj.fig, [8, 8]);
+            
+            % generate axes handle and map
             ax = uiaxes(grid);
             ax.Layout.Row = [1 6];
             ax.Layout.Column = [3 8];
             obj.my_map = Map(my_coords,'osm',ax);
             
+            % edit fields for entering coordinates
             obj.editLongMin = uieditfield(grid,"numeric");
             obj.editLongMin.Limits = [0 360];
             obj.editLongMin.Value = longitudinal_min;
-            obj.editLongMin.ValueChangedFcn = @obj.changeCoords;
             obj.editLongMin.Layout.Row = 1;
             obj.editLongMin.Layout.Column = 1;
             obj.editLongMin.Tooltip = "min longitudinal";
@@ -45,7 +48,6 @@ classdef netVision < handle
             obj.editLongMax = uieditfield(grid,"numeric");
             obj.editLongMax.Limits = [0 360];
             obj.editLongMax.Value = longitudinal_max;
-            obj.editLongMax.ValueChangedFcn = @obj.changeCoords;
             obj.editLongMax.Layout.Row = 1;
             obj.editLongMax.Layout.Column = 2;
             obj.editLongMax.Tooltip = "max longitudinal";
@@ -53,7 +55,6 @@ classdef netVision < handle
             obj.editLatMin = uieditfield(grid,"numeric");
             obj.editLatMin.Limits = [0 360];
             obj.editLatMin.Value = lateral_min;
-            obj.editLatMin.ValueChangedFcn = @obj.changeCoords;
             obj.editLatMin.Layout.Row = 2;
             obj.editLatMin.Layout.Column = 1;
             obj.editLatMin.Tooltip = "min lateral";
@@ -61,18 +62,26 @@ classdef netVision < handle
             obj.editLatMax = uieditfield(grid,"numeric");
             obj.editLatMax.Limits = [0 360];
             obj.editLatMax.Value = lateral_max;
-            obj.editLatMax.ValueChangedFcn = @obj.changeCoords;
             obj.editLatMax.Layout.Row = 2;
             obj.editLatMax.Layout.Column = 2;
             obj.editLatMax.Tooltip = "max lateral";
+            
+            % generate button to apply all changes
+            applyChanges = uibutton(grid);
+            applyChanges.Text = "Apply Changes";
+            applyChanges.Layout.Row = 8;
+            applyChanges.Layout.Column = [7 8];
+            applyChanges.ButtonPushedFcn = @obj.apply;
         end
         
-        function changeCoords(obj, source, ~)
-            obj.my_map.coords = struct(...
+        function apply(obj, source, ~)
+            if (source.Text == "Apply Changes")
+                obj.my_map.coords = struct(...
                     "minLon", obj.editLongMin.Value, ...
                     "maxLon", obj.editLongMax.Value, ...
                     "minLat", obj.editLatMin.Value, ...
                     "maxLat", obj.editLatMax.Value);
-        end
+            end
+        end     
     end
 end
