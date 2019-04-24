@@ -72,7 +72,7 @@ my_coords = struct(...
 % Fenster zum Plotten anlegen
 window = figure('Name','Fenster');
 axes_handle = axes(window);
-
+hold on
 % figure (Karte vergroessert)
 set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
@@ -81,6 +81,7 @@ hold on
 plot(x_ol_nah,y_ol_nah,'r.',x_ol_fern,y_ol_fern,'b.')
 title(['Suchkriterien: Netzwerk: ',criteria_network,...
     ', Netzwerkcode: ',num2str(criteria_networkCode)])
+
 
 %% Kommentare und Anmerkungen
 
@@ -91,6 +92,67 @@ title(['Suchkriterien: Netzwerk: ',criteria_network,...
 % Programm nur nach network und networkCode gefiltert. Am besten waere eine
 % GUI in der man diese Angaben machen kann, woraufhin die gewuenschten
 % Punkte eingezeichnet werden
+
+handles.pushbutton1 = uicontrol(window,'Style','pushbutton',... 
+                                'String','OK',... 
+                                'FontWeight','bold',... 
+                                'FontSize',10,... 
+                                'Units','normalized',... 
+                                'Position',[0.1,.07,.07,0.02],... 
+                                'Callback',@pushbutton1_callback); 
+
+
+% uicontrol(window,'Style','edit',... 
+%           'Tag','edit1',... 
+%           'Units','normalized',... 
+%           'FontSize',10,... 
+%           'Background','white',... 
+%           'Position',[.3,.525,.4,.1],... 
+%           'Callback',@edit1_callback); 
+                            
+% Erstellen einer Variable, auf welche später zugegriffen werden soll... 
+handles.wert1 = 'Juhu, es klappt!'; 
+
+% Abspeichern der Struktur 
+guidata(window,handles); 
+
+    function pushbutton1_callback(hObject,eventdata) 
+        % laden der Stuktur 
+        handles = guidata(hObject); 
+        
+        % extrahieren des eingegebenen Strings aus den edit-Feld 
+        editstring = get(findobj('Tag','edit1'),'String'); 
+    
+        % Wenn kein Wert eingegeben wurde, dann zeig den gespeicherten Wert an, 
+        % in Verbindung mit der Beschrifung des Pushbuttons 
+        if isempty(editstring) 
+            h = msgbox([handles.wert1,' - ',get(handles.pushbutton1,'String')]); 
+        % ansonsten zeige den eingegebenen String an 
+        else 
+            h = msgbox(editstring); 
+        end 
+        % warte bis die Messagebox geschlossen wurde 
+        uiwait(h); 
+        % schließe dann das Hauptfenster 
+        close(window); 
+        % warte eine Sekunde und öffne das Fenster erneut 
+        pause(1); 
+        guiohneguide; 
+    end 
+
+%     function edit1_callback(hObject,eventdata) 
+%         % laden der Stuktur 
+%         handles = guidata(hObject); 
+%         
+%         % extrahieren des eingegebenen Strings aus den edit-Feld 
+%         editstring = get(findobj('Tag','edit1'),'String'); 
+%         
+%         % Übergeben des Stings als Beschriftung des Pushbuttons 
+%         set(handles.pushbutton1,'String',editstring); 
+%         
+%         % Updaten der Struktur 
+%         guidata(hObject,handles); 
+%     end 
 
 %% created/updated
 % datetime-Objekte. Man koennte Daten nach dem Datum sortieren. Hilft beim
