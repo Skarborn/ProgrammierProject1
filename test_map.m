@@ -10,8 +10,8 @@
 % wir suchen (Koordinaten, Netzanbieter, ...). Diese Bedingungen werden im
 % Anschluss in 3) genutzt, um die relevanten x- und y-Werte
 % herauszufiltern. Zudem werden die Koordinaten im Anschluss aufgeteilt, so
-% dass Punkte, die Nache am Funkmast sind von fernen getrennt werden. Es
-% folgt die erstellung der Axes-Handle, der Map und ein Plot.
+% dass Punkte, die nahe am Funkmast sind von fernen getrennt werden. Es
+% folgt die E2rstellung der Axes-Handle, der Map und ein Plot.
 
 %% 1) Daten einlesen mit selben Namen wie in table, damit verstaendlich
 load('celldata.mat')
@@ -73,6 +73,8 @@ my_coords = struct(...
 window = figure('Name','Fenster');
 axes_handle = axes(window);
 
+% figure (Karte vergroessert)
+set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'osm',axes_handle);
 hold on
