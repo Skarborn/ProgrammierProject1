@@ -76,7 +76,7 @@ hold on
 % figure (Karte vergroessert)
 set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
-my_map = Map(my_coords,'osm',axes_handle);
+my_map = Map(my_coords,'hot',axes_handle);
 hold on
 plot(x_ol_nah,y_ol_nah,'r.',x_ol_fern,y_ol_fern,'b.')
 title(['Suchkriterien: Netzwerk: ',criteria_network,...

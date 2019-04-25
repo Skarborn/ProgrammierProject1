@@ -29,13 +29,14 @@ classdef netVision < handle
             
             % generate figure and grid used for GUI
             obj.fig = uifigure("Name","netVision");
+            obj.fig.Position = [100 100 1000 800];
             grid = uigridlayout(obj.fig, [8, 8]);
             
             % generate axes handle and map
             ax = uiaxes(grid);
             ax.Layout.Row = [1 6];
             ax.Layout.Column = [3 8];
-            obj.my_map = Map(my_coords,'osm',ax);
+            obj.my_map = Map(my_coords,'hot',ax);
             
             % edit fields for entering coordinates
             obj.editLongMin = uieditfield(grid,"numeric");
