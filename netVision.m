@@ -1,6 +1,7 @@
 classdef netVision < handle
     properties
         fig
+        uifig
         line
         
         dataBase
@@ -28,14 +29,14 @@ classdef netVision < handle
                 "maxLat", lateral_max);
             
             % generate figure and grid used for GUI
-            obj.fig = uifigure("Name","netVision");
-            obj.fig.Position = [100 100 1000 800];
-            grid = uigridlayout(obj.fig, [8, 8]);
+            obj.uifig = uifigure("Name","netVision");
+            obj.uifig.Position = [0 100 700 700];
+            grid = uigridlayout(obj.uifig, [8, 8]);
             
             % generate axes handle and map
-            ax = uiaxes(grid);
-            ax.Layout.Row = [1 6];
-            ax.Layout.Column = [3 8];
+            obj.fig = figure();
+            obj.fig.Position = [700 100 700 700];
+            ax = axes(obj.fig);
             obj.my_map = Map(my_coords,'hot',ax);
             
             % edit fields for entering coordinates
