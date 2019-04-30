@@ -35,23 +35,22 @@ lateral_min = 53.11;
 lateral_max = 53.18;
 
 %criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
-%criteria_networkCode = input(...
-%['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
-%'3 -> E-Plus, 7 -> Telefonica): ']);
-criteria_cellCode = input('Cellcode:');
+criteria_networkCode = input(...
+['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
+'3 -> E-Plus, 7 -> Telefonica): ']);
+%criteria_cellCode = input('Cellcode:');
 
 
 % Nach Suchkriterien relevante Daten
 relevant_coords = longitudinal_min <= lon & longitudinal_max >= lon & ...
                 lateral_min <= lat & lateral_max >= lat ;
 %relevant_network = (network==criteria_network);
-%relevant_networkCode = (networkCode == criteria_networkCode);
-relevant_cellCode = cellCode==criteria_cellCode;
+relevant_networkCode = (networkCode == criteria_networkCode);
+%relevant_cellCode = cellCode==criteria_cellCode;
 
 % Kombiniere alle Kriterien
-relevant_data =  relevant_coords &...
-                 relevant_cellCode;
-%                relevant_networkCode &...
+relevant_data =  relevant_coords &... 
+                 relevant_networkCode; %&...
 %                relevant_network
 
 
@@ -90,12 +89,19 @@ plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18)
 
 %% Kreise mit entsprechendem Radius ergänzen
 hold on
-th = 0:pi/50:2*pi;
-for i=1:length(dist_ol)
-xunit(i,:) = dist_ol(i) * 9.023e-06 * cos(th) + x_ol(i);
-yunit(i,:) = dist_ol(i) * 9.023e-06 * sin(th) + y_ol(i);
-patch('XData',xunit(i,:),'YData', yunit(i,:),'FaceColor', [1, 0, 0], ...
-   'FaceAlpha', 0.1,'EdgeAlpha', 1); 
+dist_table = table(x_ol,y_ol,dist_ol);
+distance_sort = sortrows(dist_table,3,'descend');
+x_olsort = distance_sort.x_ol;
+y_olsort = distance_sort.y_ol;
+dist_olsort = distance_sort.dist_ol;
+theta = 0:pi/50:2*pi;
+
+for kk=1:length(dist_olsort)
+xunit(kk,:) = dist_olsort(kk) * 9.023e-06 * cos(theta) + x_olsort(kk);
+yunit(kk,:) = dist_olsort(kk) * 9.023e-06 * sin(theta) + y_olsort(kk);
+patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
+    [1-(dist_olsort(kk)/1000)/(max(dist_olsort)/1000), 0, (dist_olsort(kk)/1000)/(max(dist_olsort)/1000)], ...
+   'FaceAlpha', 0.01,'EdgeAlpha', 0); 
 end
 
 %% Kommentare und Anmerkungen
