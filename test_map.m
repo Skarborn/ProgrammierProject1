@@ -34,27 +34,31 @@ longitudinal_max = 8.28;
 lateral_min = 53.11;
 lateral_max = 53.18;
 
-criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
-criteria_networkCode = input(...
-['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
-'3 -> E-Plus, 7 -> Telefonica): ']);
-
+%criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
+%criteria_networkCode = input(...
+%['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
+%'3 -> E-Plus, 7 -> Telefonica): ']);
+%criteria_cellCode = input('Cell Code eingeben: ');
 
 % Nach Suchkriterien relevante Daten
 relevant_coords = longitudinal_min <= lon & longitudinal_max >= lon & ...
                 lateral_min <= lat & lateral_max >= lat ;
-relevant_network = (network==criteria_network);
-relevant_networkCode = (networkCode == criteria_networkCode);
+%relevant_cellCode = (cellCode == criteria_cellCode);
+%relevant_network = (network==criteria_network);
+%relevant_networkCode = (networkCode == criteria_networkCode);
 
 % Kombiniere alle Kriterien
-relevant_data =  relevant_coords &...
-                relevant_networkCode &...
-                relevant_network;
+relevant_data =  relevant_coords;% &...
+%                 relevant_cellCode;
+                %relevant_networkCode &...
+                %relevant_network;
 
 %% 3) Alle Punkte, die in Oldenburg liegen herausfiltern
 x_ol = lon(relevant_data);
 y_ol = lat(relevant_data);
 dist_ol = distanceInM(relevant_data);
+cellCodeOl = cellCode(relevant_data);
+areaCodeOl = areaCode(relevant_data);
 
 x_ol_nah = x_ol(dist_ol<=1000);
 x_ol_fern = x_ol(dist_ol>1000);
@@ -78,9 +82,10 @@ set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'hot',axes_handle);
 hold on
-plot(x_ol_nah,y_ol_nah,'r.',x_ol_fern,y_ol_fern,'b.')
-title(['Suchkriterien: Netzwerk: ',criteria_network,...
-    ', Netzwerkcode: ',num2str(criteria_networkCode)])
+nahePunkte = plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18);
+fernePunkte = plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18);
+%title(['Suchkriterien: Netzwerk: ',criteria_network,...
+%    ', Netzwerkcode: ',num2str(criteria_networkCode)])
 
 
 %% Kommentare und Anmerkungen
