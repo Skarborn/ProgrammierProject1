@@ -16,7 +16,16 @@ classdef netVision < handle
         function obj = netVision()
             % read in celldata
             obj.dataBase = load("celldata.mat");
-            
+            lon = obj.dataBase.celldata.lon;
+            lat = obj.dataBase.celldata.lat;
+            created = obj.dataBase.celldata.created;
+            updated = obj.dataBase.celldata.updated;
+            network = obj.dataBase.celldata.network;
+            countryCode = obj.dataBase.celldata.countryCode;
+            networkCode = obj.dataBase.celldata.networkCode;
+            areaCode = obj.dataBase.celldata.areaCode;
+            cellCode = obj.dataBase.celldata.cellCode;
+            distanceInM = obj.dataBase.celldata.distanceInM;
             % coords to generate map
             longitudinal_min = 8.18;
             longitudinal_max = 8.28;
@@ -27,6 +36,13 @@ classdef netVision < handle
                 "maxLon", longitudinal_max, ...
                 "minLat", lateral_min, ...
                 "maxLat", lateral_max);
+            
+            criteria_network = input(...
+                'Netz als Char eingeben (GSM, UMTS, LTE): ');
+            criteria_networkCode = input(...
+                ['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
+                '3 -> E-Plus, 7 -> Telefonica): ']);
+            
             
             % generate figure and grid used for GUI
             obj.uifig = uifigure("Name","netVision");
@@ -74,6 +90,29 @@ classdef netVision < handle
             applyChanges.Layout.Row = 8;
             applyChanges.Layout.Column = [7 8];
             applyChanges.ButtonPushedFcn = @obj.apply;
+            
+            % Nach Suchkriterien relevante Daten
+            relevant_coords = longitudinal_min <= lon & ...
+                longitudinal_max >= lon & lateral_min <= lat & ...
+                lateral_max >= lat ;
+            relevant_network = (network==criteria_network);
+            relevant_networkCode = (networkCode == criteria_networkCode);
+            
+            % Kombiniere alle Kriterien
+            relevant_data =  relevant_coords &...
+                relevant_networkCode &...
+                relevant_network;
+            
+            x_ol = lon(relevant_data);
+            y_ol = lat(relevant_data);
+            dist_ol = distanceInM(relevant_data);
+            
+            x_ol_nah = x_ol(dist_ol<=1000);
+            x_ol_fern = x_ol(dist_ol>1000);
+            y_ol_nah = y_ol(dist_ol<=1000);
+            y_ol_fern = y_ol(dist_ol>1000);
+            hold on;
+            plot(x_ol_nah,y_ol_nah,'r.',x_ol_fern,y_ol_fern,'b.')
         end
         
         function apply(obj, source, ~)
@@ -84,6 +123,6 @@ classdef netVision < handle
                     "minLat", obj.editLatMin.Value, ...
                     "maxLat", obj.editLatMax.Value);
             end
-        end     
+        end
     end
 end
