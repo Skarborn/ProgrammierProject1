@@ -34,7 +34,7 @@ longitudinal_max = 8.28;
 lateral_min = 53.11;
 lateral_max = 53.18;
 
-criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
+criteria_network = input('Netz als Char eingeben (GSM, UMTS, LTE): ');
 criteria_networkCode = input(...
 ['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
 '3 -> E-Plus, 7 -> Telefonica): ']);
