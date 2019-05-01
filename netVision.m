@@ -77,8 +77,8 @@ classdef netVision < handle
             obj.checkbox = uicheckbox(grid);
             obj.checkbox.Text = "Funkmasten";
             obj.checkbox.Value = 0;
-            obj.checkbox.Layout.Row = 5;
-            obj.checkbox.Layout.Column = 7;
+            obj.checkbox.Layout.Row = 1;
+            obj.checkbox.Layout.Column = [7 8];
 
             % generate button to apply all changes
             applyChanges = uibutton(grid);
