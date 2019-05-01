@@ -75,7 +75,7 @@ my_coords = struct(...
 % Fenster zum Plotten anlegen
 window = figure('Name','Fenster');
 axes_handle = axes(window);
-hold on
+
 % figure (Karte vergroessert)
 set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
