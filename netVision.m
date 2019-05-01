@@ -8,6 +8,8 @@ classdef netVision < handle
         dataBase
         myMap
         
+        guiElements
+        
         editLongMin
         editLongMax
         editLatMin
@@ -43,34 +45,37 @@ classdef netVision < handle
             obj.myMap = Map(initialCoords,'hot',obj.ax);
             hold on
             
+            % generate GUI elements
             % edit fields for entering coordinates
-            obj.editLongMin = uieditfield(grid,"numeric");
-            obj.editLongMin.Limits = [0 360];
-            obj.editLongMin.Value = longitudinalMin;
-            obj.editLongMin.Layout.Row = 1;
-            obj.editLongMin.Layout.Column = 1;
-            obj.editLongMin.Tooltip = "min longitudinal";
+            guiElements = struct();
             
-            obj.editLongMax = uieditfield(grid,"numeric");
-            obj.editLongMax.Limits = [0 360];
-            obj.editLongMax.Value = longitudinalMax;
-            obj.editLongMax.Layout.Row = 1;
-            obj.editLongMax.Layout.Column = 2;
-            obj.editLongMax.Tooltip = "max longitudinal";
+            obj.guiElements.editLongMin = uieditfield(grid,"numeric");
+            obj.guiElements.editLongMin.Limits = [0 360];
+            obj.guiElements.editLongMin.Value = longitudinalMin;
+            obj.guiElements.editLongMin.Layout.Row = 1;
+            obj.guiElements.editLongMin.Layout.Column = 1;
+            obj.guiElements.editLongMin.Tooltip = "min longitudinal";
             
-            obj.editLatMin = uieditfield(grid,"numeric");
-            obj.editLatMin.Limits = [0 360];
-            obj.editLatMin.Value = lateralMin;
-            obj.editLatMin.Layout.Row = 2;
-            obj.editLatMin.Layout.Column = 1;
-            obj.editLatMin.Tooltip = "min lateral";
+            obj.guiElements.editLongMax = uieditfield(grid,"numeric");
+            obj.guiElements.editLongMax.Limits = [0 360];
+            obj.guiElements.editLongMax.Value = longitudinalMax;
+            obj.guiElements.editLongMax.Layout.Row = 1;
+            obj.guiElements.editLongMax.Layout.Column = 2;
+            obj.guiElements.editLongMax.Tooltip = "max longitudinal";
             
-            obj.editLatMax = uieditfield(grid,"numeric");
-            obj.editLatMax.Limits = [0 360];
-            obj.editLatMax.Value = lateralMax;
-            obj.editLatMax.Layout.Row = 2;
-            obj.editLatMax.Layout.Column = 2;
-            obj.editLatMax.Tooltip = "max lateral";
+            obj.guiElements.editLatMin = uieditfield(grid,"numeric");
+            obj.guiElements.editLatMin.Limits = [0 360];
+            obj.guiElements.editLatMin.Value = lateralMin;
+            obj.guiElements.editLatMin.Layout.Row = 2;
+            obj.guiElements.editLatMin.Layout.Column = 1;
+            obj.guiElements.editLatMin.Tooltip = "min lateral";
+            
+            obj.guiElements.editLatMax = uieditfield(grid,"numeric");
+            obj.guiElements.editLatMax.Limits = [0 360];
+            obj.guiElements.editLatMax.Value = lateralMax;
+            obj.guiElements.editLatMax.Layout.Row = 2;
+            obj.guiElements.editLatMax.Layout.Column = 2;
+            obj.guiElements.editLatMax.Tooltip = "max lateral";
             
             
             % generate button to apply all changes
@@ -85,10 +90,10 @@ classdef netVision < handle
         function apply(obj, source, ~)
             if (source.Text == "Apply Changes")
                 obj.myMap.coords = struct(...
-                    "minLon", obj.editLongMin.Value, ...
-                    "maxLon", obj.editLongMax.Value, ...
-                    "minLat", obj.editLatMin.Value, ...
-                    "maxLat", obj.editLatMax.Value);
+                    "minLon", obj.guiElements.editLongMin.Value, ...
+                    "maxLon", obj.guiElements.editLongMax.Value, ...
+                    "minLat", obj.guiElements.editLatMin.Value, ...
+                    "maxLat", obj.guiElements.editLatMax.Value);
             end
             % if checkbox == true -> draw Dots
             obj.drawDots()
@@ -108,19 +113,20 @@ classdef netVision < handle
             
             % generate logical vector for filtering purposes
             relevantCoords = ...
-                obj.editLongMin.Value <= lon &...
-                obj.editLongMax.Value >= lon & ...
-                obj.editLatMin.Value <= lat &...
-                obj.editLatMax.Value >= lat ;
+                obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
+                obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
+                obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
+                obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
             
             % combine logical vectors for filtering purposes
             relevantData =  relevantCoords;
             
-            lonCurrent = lon(relevantData);
-            latCurrent = lat(relevantData);
+            % generate current vectors
+            lonCurrent = obj.dataBase.celldata.lon(relevantData);
+            latCurrent = obj.dataBase.celldata.lat(relevantData);
             
             obj.line = plot(obj.ax,lonCurrent,latCurrent,...
-                'r.','MarkerSize',18)
+                'r.','MarkerSize',18);
         end
     end
 end
