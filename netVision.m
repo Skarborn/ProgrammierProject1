@@ -14,6 +14,8 @@ classdef netVision < handle
         editLongMax
         editLatMin
         editLatMax
+        
+        checkbox
     end
     methods
         function obj = netVision()
@@ -77,7 +79,12 @@ classdef netVision < handle
             obj.guiElements.editLatMax.Layout.Column = 2;
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
-            
+            obj.checkbox = uicheckbox(grid);
+            obj.checkbox.Text = "Funkmasten";
+            obj.checkbox.Value = 0;
+            obj.checkbox.Layout.Row = 5;
+            obj.checkbox.Layout.Column = 7;
+
             % generate button to apply all changes
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
@@ -95,8 +102,12 @@ classdef netVision < handle
                     "minLat", obj.guiElements.editLatMin.Value, ...
                     "maxLat", obj.guiElements.editLatMax.Value);
             end
-            % if checkbox == true -> draw Dots
-            obj.drawDots()
+            if obj.checkbox.Value == true %-> draw Dots
+                obj.drawDots()
+            else 
+                obj.line.XData = [];
+                obj.line.YData = [];
+            end
         end
         
         function drawDots(obj)
