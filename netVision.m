@@ -9,13 +9,6 @@ classdef netVision < handle
         myMap
         
         guiElements
-        
-        editLongMin
-        editLongMax
-        editLatMin
-        editLatMax
-        
-        checkbox
     end
     methods
         function obj = netVision()
@@ -51,6 +44,7 @@ classdef netVision < handle
             % edit fields for entering coordinates
             guiElements = struct();
             
+            % EDIT FIELDS
             obj.guiElements.editLongMin = uieditfield(grid,"numeric");
             obj.guiElements.editLongMin.Limits = [0 360];
             obj.guiElements.editLongMin.Value = longitudinalMin;
@@ -79,13 +73,20 @@ classdef netVision < handle
             obj.guiElements.editLatMax.Layout.Column = 2;
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
-            obj.checkbox = uicheckbox(grid);
-            obj.checkbox.Text = "Funkmasten";
-            obj.checkbox.Value = 0;
-            obj.checkbox.Layout.Row = 5;
-            obj.checkbox.Layout.Column = 7;
+            % CHECKBOXES
+            obj.guiElements.checkboxDots = uicheckbox(grid);
+            obj.guiElements.checkboxDots.Text = "Punkte";
+            obj.guiElements.checkboxDots.Value = 0;
+            obj.guiElements.checkboxDots.Layout.Row = 5;
+            obj.guiElements.checkboxDots.Layout.Column = 7;
+            
+            obj.guiElements.checkboxHeatmap = uicheckbox(grid);
+            obj.guiElements.checkboxHeatmap.Text = "Heatmap";
+            obj.guiElements.checkboxHeatmap.Value = 0;
+            obj.guiElements.checkboxHeatmap.Layout.Row = 6;
+            obj.guiElements.checkboxHeatmap.Layout.Column = 7;
 
-            % generate button to apply all changes
+            % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
             applyChanges.Layout.Row = 8;
@@ -95,6 +96,7 @@ classdef netVision < handle
         end
         
         function apply(obj, source, ~)
+            % Button "Apply Changes" causes update of axis
             if (source.Text == "Apply Changes")
                 obj.myMap.coords = struct(...
                     "minLon", obj.guiElements.editLongMin.Value, ...
@@ -102,25 +104,22 @@ classdef netVision < handle
                     "minLat", obj.guiElements.editLatMin.Value, ...
                     "maxLat", obj.guiElements.editLatMax.Value);
             end
-            if obj.checkbox.Value == true %-> draw Dots
+            
+            % if checkbox is ticked, plot dots, otherwise delete dots
+            if obj.guiElements.checkboxDots.Value == true
                 obj.drawDots()
             else 
                 obj.line.XData = [];
                 obj.line.YData = [];
             end
+            
+            if obj.guiElements.checkboxHeatmap.Value == true
+                obj.drawHeatmap()
+            end
+            
         end
         
         function drawDots(obj)
-            lon = obj.dataBase.celldata.lon;
-            lat = obj.dataBase.celldata.lat;
-            created = obj.dataBase.celldata.created;
-            updated = obj.dataBase.celldata.updated;
-            network = obj.dataBase.celldata.network;
-            countryCode = obj.dataBase.celldata.countryCode;
-            networkCode = obj.dataBase.celldata.networkCode;
-            areaCode = obj.dataBase.celldata.areaCode;
-            cellCode = obj.dataBase.celldata.cellCode;
-            distanceInM = obj.dataBase.celldata.distanceInM;
             
             % generate logical vector for filtering purposes
             relevantCoords = ...
@@ -139,5 +138,10 @@ classdef netVision < handle
             obj.line = plot(obj.ax,lonCurrent,latCurrent,...
                 'r.','MarkerSize',18);
         end
+        
+        function drawHeatmap(obj)
+            % FILL!
+        end
+        
     end
 end
