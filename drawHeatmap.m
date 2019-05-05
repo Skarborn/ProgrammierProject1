@@ -1,13 +1,17 @@
-% Oldenburg coords
-longitudinal_min = 0;
-longitudinal_max = 100;
-lateral_min = 0;
-lateral_max = 100;
-stepWidth = 0.01; % im spaeteren programm abhaengig von zoomLevel
+% vorher test_map ausfuehren
+x_width = 755;
+y_width = 652;
+metersPerDeg = 9e6;
+
+long_width = longitudinal_max-longitudinal_min;
+lat_width = lateral_max-lateral_min;
+
+degProPix_lat = lat_width/y_width;
+degProPix_lon = long_width/x_width;
 
 % x und y vektoren in grad
-x = longitudinal_min : stepWidth : longitudinal_max;
-y = lateral_min : stepWidth : lateral_max;
+x = longitudinal_min : degProPix_lon : longitudinal_max;
+y = lateral_max : -degProPix_lat : lateral_min;
 
 % meshgrid erstellen
 [X,Y] = meshgrid(x,y);
@@ -15,16 +19,17 @@ y = lateral_min : stepWidth : lateral_max;
 % Formel zur Intesitaetsabnahme anwenden
 P = 10; % Leistung
 
-points = [100*rand(1,20) ; 100*rand(1,20)];
 F = zeros(length(y),length(x));
 
-for kk = 1:length(points)
-    F = F + P./(4*pi*(((0.1*X-points(1,kk))).^2+((0.1*Y-points(2,kk))).^2));
+
+for kk = 1:length(x_ol)
+    F = F + P./(3*pi*((metersPerDeg*(X-x_ol(kk))).^2+(metersPerDeg*(Y-y_ol(kk))).^2));
 end
 
 % Limittiereung auf 
 F(F>10)=10;
-ax = axes;
+fig = figure();
+ax = axes(fig);
 im = imagesc(ax,10*log10(F/1e-12));
 colorbar
-im.AlphaData = 0.3;
+im.AlphaData = 1;
