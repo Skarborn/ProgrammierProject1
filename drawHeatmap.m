@@ -26,9 +26,8 @@ for kk = 1:length(x_ol)
 end
 
 % Limittiereung auf 
-F(F>10)=10;
-fig = figure();
-ax = axes(fig);
-im = imagesc(ax,10*log10(F/1e-12));
+hold on
+%im = imagesc(ax,10*log10(F/1e-12));
+im = image('XData',x,'YData',y,'CData',10*log10(F/1e-12));
 colorbar
-im.AlphaData = 1;
+im.AlphaData = 0.5;
