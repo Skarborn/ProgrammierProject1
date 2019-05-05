@@ -80,8 +80,8 @@ set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'hot',axes_handle);
 hold on
-nahePunkte = plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18);
-fernePunkte = plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18);
+% nahePunkte = plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18);
+% fernePunkte = plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18);
 %title(['Suchkriterien: Netzwerk: ',criteria_network,...
 %    ', Netzwerkcode: ',num2str(criteria_networkCode)])
 
