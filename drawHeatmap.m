@@ -19,7 +19,7 @@ points = [100*rand(1,20) ; 100*rand(1,20)];
 F = zeros(length(y),length(x));
 
 for kk = 1:length(points)
-    F = F + P./(4*pi*(((X-points(1,kk))).^2+((Y-points(2,kk))).^2));
+    F = F + P./(4*pi*(((0.1*X-points(1,kk))).^2+((0.1*Y-points(2,kk))).^2));
 end
 
 % Limittiereung auf 
