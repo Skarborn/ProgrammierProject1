@@ -1,6 +1,6 @@
 x_width = 755;
 y_width = 652;
-
+P = 10;
 heatMap = zeros(755,652);
 
 longitudinal_min = 8.18;
@@ -23,8 +23,10 @@ for kk = 0:y_width-1
         x_ol < longitudinal_min + (kk+1)*degProPix_lon & ...
         y_ol < lateral_max - ll*degProPix_lat & ...
         y_ol > lateral_max - (ll+1)*degProPix_lat);
-        heatMap(kk+1,ll+1) = 100 * sum(isInTile);
+    intensity = P*sum(isInTile);    
+    heatMap(kk+1,ll+1) = intensity;
     end
 end
-%heatMap(heatMap == 0) = NaN;
-heatmap(heatMap)
+
+heatMap(heatMap == 0) = NaN;
+contourf(heatMap)
