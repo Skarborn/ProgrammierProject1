@@ -17,13 +17,13 @@ y = lateral_max : -degProPix_lat : lateral_min;
 [X,Y] = meshgrid(x,y);
 
 % Formel zur Intesitaetsabnahme anwenden
-P = 10; % Leistung
+P = 7; % Leistung
 
 F = zeros(length(y),length(x));
 
 
 for kk = 1:length(x_ol)
-    F = F + P./(3*pi*((metersPerDeg*(X-x_ol(kk))).^2+(metersPerDeg*(Y-y_ol(kk))).^2));
+    F = F + P./(((4*pi*metersPerDeg*(X-x_ol(kk))).^2+(metersPerDeg*(Y-y_ol(kk))).^2));
 end
 
 % Limittiereung auf 

@@ -34,7 +34,7 @@ longitudinal_max = 8.28;
 lateral_min = 53.11;
 lateral_max = 53.18;
 
-%criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
+criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
 criteria_networkCode = input(...
 ['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
 '3 -> E-Plus, 7 -> Telefonica): ']);
@@ -44,14 +44,14 @@ criteria_networkCode = input(...
 % Nach Suchkriterien relevante Daten
 relevant_coords = longitudinal_min <= lon & longitudinal_max >= lon & ...
                 lateral_min <= lat & lateral_max >= lat ;
-%relevant_network = (network==criteria_network);
+relevant_network = (network==criteria_network);
 relevant_networkCode = (networkCode == criteria_networkCode);
 %relevant_cellCode = cellCode==criteria_cellCode;
 
 % Kombiniere alle Kriterien
 relevant_data =  relevant_coords &... 
-                 relevant_networkCode; %&...
-%                relevant_network
+                 relevant_networkCode &...
+                 relevant_network;
 
 
 %% 3) Alle Punkte, die in Oldenburg liegen herausfiltern
@@ -82,8 +82,8 @@ set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'osm',axes_handle);
 hold on
-plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18)
-plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18)
+%plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18)
+%plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18)
 
 %title(['Suchkriterien: Netzwerk: ',criteria_network,...
 %    ', Netzwerkcode: ',num2str(criteria_networkCode)])
