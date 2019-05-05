@@ -82,8 +82,9 @@ set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'osm',axes_handle);
 hold on
-plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',1)
-plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',1)
+plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18)
+plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18)
+
 %title(['Suchkriterien: Netzwerk: ',criteria_network,...
 %    ', Netzwerkcode: ',num2str(criteria_networkCode)])
 
