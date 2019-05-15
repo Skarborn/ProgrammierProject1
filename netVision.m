@@ -19,13 +19,15 @@ classdef netVision < handle
             
             % generate figure and grid used for GUI
             obj.uifig = uifigure("Name","netVision");
-            obj.uifig.Position = [0 100 700 700];
-            grid = uigridlayout(obj.uifig, [8, 8]);
+            obj.uifig.Position = [0 100 1000 800];
+            grid = uigridlayout(obj.uifig, [16, 20]);
             
             % generate axes handle and map
-            obj.fig = figure();
-            obj.fig.Position = [700 100 700 700];
-            obj.ax = axes(obj.fig);
+            %obj.fig = figure();
+            %obj.fig.Position = [700 100 700 700];
+            obj.ax = uiaxes(grid);
+            obj.ax.Layout.Row = [1 16];
+            obj.ax.Layout.Column = [5 20];
             
             % generate Map of Oldenburg
             longitudinalMin = 8.18;
@@ -40,7 +42,7 @@ classdef netVision < handle
                 "maxLat", lateralMax);
             
             obj.myMap = Map(initialCoords,'hot',obj.ax,-2);
-            hold on
+            %hold on
             
             % GENERATE GUI ELEMENTS
             
@@ -83,19 +85,19 @@ classdef netVision < handle
             obj.guiElements.checkboxDots.Text = "Punkte";
             obj.guiElements.checkboxDots.Value = 0;
             obj.guiElements.checkboxDots.Layout.Row = 5;
-            obj.guiElements.checkboxDots.Layout.Column = 7;
+            obj.guiElements.checkboxDots.Layout.Column = [1 2];
             
             obj.guiElements.checkboxHeatmap = uicheckbox(grid);
             obj.guiElements.checkboxHeatmap.Text = "Heatmap";
             obj.guiElements.checkboxHeatmap.Value = 0;
             obj.guiElements.checkboxHeatmap.Layout.Row = 6;
-            obj.guiElements.checkboxHeatmap.Layout.Column = 7;
+            obj.guiElements.checkboxHeatmap.Layout.Column = [1 2];
             
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
             applyChanges.Layout.Row = 8;
-            applyChanges.Layout.Column = [7 8];
+            applyChanges.Layout.Column = [1 2];
             applyChanges.ButtonPushedFcn = @obj.apply;
             
         end
@@ -120,6 +122,7 @@ classdef netVision < handle
             
             % if checkbox is ticked, plot heatmap
             if obj.guiElements.checkboxHeatmap.Value == true
+                obj.heatMap.AlphaData = 0;
                 obj.drawHeatmap()
             else
                 obj.heatMap.AlphaData = 0;
@@ -166,8 +169,8 @@ classdef netVision < handle
             lonCurrent = obj.dataBase.celldata.lon(relevantData);
             latCurrent = obj.dataBase.celldata.lat(relevantData);
             
-            xPixelWidth = round(obj.fig.Position(3)*obj.ax.Position(3));
-            yPixelWidth = round(obj.fig.Position(4)*obj.ax.Position(4));
+            xPixelWidth = obj.ax.Position(3);
+            yPixelWidth = obj.ax.Position(4);
             
             % width of current axis in degree
             long_width = obj.guiElements.editLongMax.Value -...
