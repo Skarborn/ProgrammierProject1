@@ -112,46 +112,24 @@ classdef netVision < handle
                     "maxLat", obj.guiElements.editLatMax.Value);
             end
             
-            % if checkbox is ticked, plot dots, otherwise delete dots
+            % delete current overlays
+            obj.dotMap.XData = [];
+            obj.dotMap.YData = [];
+            obj.heatMap.AlphaData = 0;
+            
+            % if checkbox is ticked, plot dots
             if obj.guiElements.checkboxDots.Value == true
                 obj.drawDots()
-            else
-                obj.dotMap.XData = [];
-                obj.dotMap.YData = [];
             end
             
             % if checkbox is ticked, plot heatmap
-            if obj.guiElements.checkboxHeatmap.Value == true
-                obj.heatMap.AlphaData = 0;
+            if obj.guiElements.checkboxHeatmap.Value == true                
                 obj.drawHeatmap()
-            else
-                obj.heatMap.AlphaData = 0;
             end
             
         end
         
-        function drawDots(obj)
-            
-            % generate logical vector for filtering purposes
-            relevantCoords = ...
-                obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
-                obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
-                obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
-                obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
-            
-            % combine logical vectors for filtering purposes
-            relevantData =  relevantCoords;
-            
-            % generate current vectors
-            lonCurrent = obj.dataBase.celldata.lon(relevantData);
-            latCurrent = obj.dataBase.celldata.lat(relevantData);
-            
-            obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
-                'r.','MarkerSize',18);
-        end
-        
-        function drawHeatmap(obj)
-            
+        function relevantData = getRelevantData(obj)
             % generate logical vector for filtering purposes
             relevantCoords = ...
                 obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
@@ -164,10 +142,24 @@ classdef netVision < handle
             
             % combine logical vectors for filtering purposes
             relevantData =  relevantCoords & relevantNetwork & relevantNetworkCode;
+
+        end
+        
+        function drawDots(obj)
             
             % generate current vectors
-            lonCurrent = obj.dataBase.celldata.lon(relevantData);
-            latCurrent = obj.dataBase.celldata.lat(relevantData);
+            lonCurrent = obj.dataBase.celldata.lon(obj.getRelevantData());
+            latCurrent = obj.dataBase.celldata.lat(obj.getRelevantData());
+            
+            obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+                'r.','MarkerSize',18);
+        end
+        
+        function drawHeatmap(obj)
+            
+            % generate current vectors
+            lonCurrent = obj.dataBase.celldata.lon(obj.getRelevantData());
+            latCurrent = obj.dataBase.celldata.lat(obj.getRelevantData());
             
             xPixelWidth = obj.ax.Position(3);
             yPixelWidth = obj.ax.Position(4);
