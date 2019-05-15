@@ -39,7 +39,7 @@ classdef netVision < handle
                 "minLat", lateralMin, ...
                 "maxLat", lateralMax);
             
-            obj.myMap = Map(initialCoords,'hot',obj.ax);
+            obj.myMap = Map(initialCoords,'hot',obj.ax,-2);
             hold on
             
             % GENERATE GUI ELEMENTS
@@ -215,10 +215,9 @@ classdef netVision < handle
                 F = F + A;
             end
 
-            figure;
-            obj.heatMap = image(x,y,10*log10(F/1e-12));
+            obj.heatMap = image(obj.ax,x,y,10*log10(F/1e-12));
             colormap jet
-            obj.heatMap.AlphaData = 0.4;
+            obj.heatMap.AlphaData = 0.3;
             obj.heatMap.CDataMapping = 'scaled';
             
         end
