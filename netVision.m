@@ -47,6 +47,7 @@ classdef netVision < handle
             % edit fields for entering coordinates
             guiElements = struct();
             
+            
             % EDIT FIELDS
             obj.guiElements.editLongMin = uieditfield(grid,"numeric");
             obj.guiElements.editLongMin.Limits = [0 360];
