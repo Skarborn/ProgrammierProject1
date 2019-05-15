@@ -43,14 +43,13 @@ criteria_networkCode = input(...
 relevant_coords = longitudinal_min <= lon & longitudinal_max >= lon & ...
                 lateral_min <= lat & lateral_max >= lat ;
 %relevant_cellCode = (cellCode == criteria_cellCode);
-%relevant_network = (network==criteria_network);
-%relevant_networkCode = (networkCode == criteria_networkCode);
+relevant_network = (network==criteria_network);
+relevant_networkCode = (networkCode == criteria_networkCode);
 
 % Kombiniere alle Kriterien
-relevant_data =  relevant_coords;% &...
-%                 relevant_cellCode;
-                %relevant_networkCode &...
-                %relevant_network;
+relevant_data = relevant_coords &...
+                relevant_networkCode &...
+                relevant_network;
 
 %% 3) Alle Punkte, die in Oldenburg liegen herausfiltern
 x_ol = lon(relevant_data);
@@ -81,8 +80,8 @@ set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'hot',axes_handle);
 hold on
-nahePunkte = plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18);
-fernePunkte = plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18);
+% nahePunkte = plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18);
+% fernePunkte = plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18);
 %title(['Suchkriterien: Netzwerk: ',criteria_network,...
 %    ', Netzwerkcode: ',num2str(criteria_networkCode)])
 

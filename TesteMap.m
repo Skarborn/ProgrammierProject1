@@ -34,7 +34,7 @@ longitudinal_max = 8.28;
 lateral_min = 53.11;
 lateral_max = 53.18;
 
-%criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
+criteria_network = input('Netz eingeben (GSM, UMTS, LTE): ');
 criteria_networkCode = input(...
 ['Netzwerkcode eingeben (1 -> Telekom, 2 -> Vodafone, ',...
 '3 -> E-Plus, 7 -> Telefonica): ']);
@@ -44,14 +44,14 @@ criteria_networkCode = input(...
 % Nach Suchkriterien relevante Daten
 relevant_coords = longitudinal_min <= lon & longitudinal_max >= lon & ...
                 lateral_min <= lat & lateral_max >= lat ;
-%relevant_network = (network==criteria_network);
+relevant_network = (network==criteria_network);
 relevant_networkCode = (networkCode == criteria_networkCode);
 %relevant_cellCode = cellCode==criteria_cellCode;
 
 % Kombiniere alle Kriterien
 relevant_data =  relevant_coords &... 
-                 relevant_networkCode; %&...
-%                relevant_network
+                 relevant_networkCode &...
+                 relevant_network;
 
 
 %% 3) Alle Punkte, die in Oldenburg liegen herausfiltern
@@ -81,7 +81,7 @@ axis equal;
 set(gcf,'position',[100 100 1000 800]);
 % map anlegen und plotten
 my_map = Map(my_coords,'osm',axes_handle);
-%hold on
+hold on
 %plot(x_ol_nah,y_ol_nah,'r.','MarkerSize',18)
 %plot(x_ol_fern,y_ol_fern,'b.','MarkerSize',18)
 
@@ -89,21 +89,38 @@ my_map = Map(my_coords,'osm',axes_handle);
 %    ', Netzwerkcode: ',num2str(criteria_networkCode)])
 
 %% Kreise mit entsprechendem Radius ergänzen
-hold on
-dist_table = table(x_ol,y_ol,dist_ol);
-distance_sort = sortrows(dist_table,3,'descend');
-x_olsort = distance_sort.x_ol;
-y_olsort = distance_sort.y_ol;
-dist_olsort = distance_sort.dist_ol;
-theta = 0:pi/50:2*pi;
-
-for kk=1:length(dist_olsort)
-xunit(kk,:) = dist_olsort(kk) * 9.023e-06 * cos(theta) + x_olsort(kk);
-yunit(kk,:) = dist_olsort(kk) * 9.023e-06 * sin(theta) + y_olsort(kk);
-patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
-    [1-(dist_olsort(kk)/1000)/(max(dist_olsort)/1000), 0, (dist_olsort(kk)/1000)/(max(dist_olsort)/1000)], ...
-   'FaceAlpha', 0.01,'EdgeAlpha', 0); 
-end
+% hold on
+% dist_table = table(x_ol,y_ol,dist_ol);
+% distance_sort = sortrows(dist_table,3,'descend');
+% x_olsort = distance_sort.x_ol;
+% y_olsort = distance_sort.y_ol;
+% dist_olsort = distance_sort.dist_ol;
+% theta = 0:pi/50:2*pi;
+% 
+% for kk=1:length(dist_olsort)
+% xunit(kk,:) = dist_olsort(kk) * 9.023e-06 * cos(theta) + x_olsort(kk);
+% yunit(kk,:) = dist_olsort(kk) * 9.023e-06 * sin(theta) + y_olsort(kk);
+% if dist_olsort(kk)==1000
+%     patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
+%         [1, 0, 0], 'FaceAlpha', 0.01,'EdgeAlpha', 0);
+% elseif dist_olsort(kk)>1000 && dist_olsort(kk)<(max(dist_olsort)/3)
+%     patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
+%         [1-(1000/dist_olsort(kk)), dist_olsort(kk)/(max(dist_olsort)/3), 0], ...
+%         'FaceAlpha', 0.01,'EdgeAlpha', 0);
+% elseif dist_olsort(kk)==(max(dist_olsort(kk))/3)
+%     patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
+%         [0, 1, 0], 'FaceAlpha', 0.01,'EdgeAlpha', 0);
+% elseif dist_olsort(kk)>(max(dist_olsort(kk))/3) && dist_olsort(kk)<(max(dist_olsort))
+%     patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
+%         [0, (1-((max(dist_olsort)/3)/dist_olsort(kk))), (dist_olsort(kk)/max(dist_olsort))], ...
+%         'FaceAlpha', 0.01,'EdgeAlpha', 0);
+% else
+%     patch('XData',xunit(kk,:),'YData', yunit(kk,:),'FaceColor', ...
+%         [0, 0, 1], 'FaceAlpha', 0.01,'EdgeAlpha', 0);
+% end
+%     
+% 
+% end
 
 %% Kommentare und Anmerkungen
 

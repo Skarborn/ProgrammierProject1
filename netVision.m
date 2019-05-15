@@ -2,11 +2,13 @@ classdef netVision < handle
     properties
         fig
         uifig
-        line
         ax
         
         dataBase
+        
         myMap
+        dotMap
+        heatMap
         
         guiElements
     end
@@ -14,7 +16,7 @@ classdef netVision < handle
         function obj = netVision()
             % read in celldata
             obj.dataBase = load("celldata.mat");
-
+            
             % generate figure and grid used for GUI
             obj.uifig = uifigure("Name","netVision");
             obj.uifig.Position = [0 100 700 700];
@@ -32,15 +34,16 @@ classdef netVision < handle
             lateralMax = 53.18;
             
             initialCoords = struct(...
-                    "minLon", longitudinalMin, ...
-                    "maxLon", longitudinalMax, ...
-                    "minLat", lateralMin, ...
-                    "maxLat", lateralMax);
+                "minLon", longitudinalMin, ...
+                "maxLon", longitudinalMax, ...
+                "minLat", lateralMin, ...
+                "maxLat", lateralMax);
             
             obj.myMap = Map(initialCoords,'hot',obj.ax);
             hold on
             
-            % generate GUI elements
+            % GENERATE GUI ELEMENTS
+            
             % edit fields for entering coordinates
 
             guiElements = struct();
@@ -86,7 +89,7 @@ classdef netVision < handle
             obj.guiElements.checkboxHeatmap.Value = 0;
             obj.guiElements.checkboxHeatmap.Layout.Row = 6;
             obj.guiElements.checkboxHeatmap.Layout.Column = 7;
-
+            
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
@@ -109,11 +112,12 @@ classdef netVision < handle
             % if checkbox is ticked, plot dots, otherwise delete dots
             if obj.guiElements.checkboxDots.Value == true
                 obj.drawDots()
-            else 
-                obj.line.XData = [];
-                obj.line.YData = [];
+            else
+                obj.dotMap.XData = [];
+                obj.dotMap.YData = [];
             end
             
+            % if checkbox is ticked, plot heatmap
             if obj.guiElements.checkboxHeatmap.Value == true
                 obj.drawHeatmap()
             end
@@ -136,12 +140,88 @@ classdef netVision < handle
             lonCurrent = obj.dataBase.celldata.lon(relevantData);
             latCurrent = obj.dataBase.celldata.lat(relevantData);
             
-            obj.line = plot(obj.ax,lonCurrent,latCurrent,...
+            obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
                 'r.','MarkerSize',18);
         end
         
         function drawHeatmap(obj)
-            % FILL!
+            
+            % generate logical vector for filtering purposes
+            relevantCoords = ...
+                obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
+                obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
+                obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
+                obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
+            relevantNetwork = (obj.dataBase.celldata.network=='LTE');
+            relevantNetworkCode = (obj.dataBase.celldata.networkCode == 1);
+            
+            
+            % combine logical vectors for filtering purposes
+            relevantData =  relevantCoords & relevantNetwork & relevantNetworkCode;
+            
+            % generate current vectors
+            lonCurrent = obj.dataBase.celldata.lon(relevantData);
+            latCurrent = obj.dataBase.celldata.lat(relevantData);
+            
+            xPixelWidth = round(obj.fig.Position(3)*obj.ax.Position(3));
+            yPixelWidth = round(obj.fig.Position(4)*obj.ax.Position(4));
+            
+            % width of current axis in degree
+            long_width = obj.guiElements.editLongMax.Value -...
+                obj.guiElements.editLongMin.Value;
+            lat_width = obj.guiElements.editLatMax.Value -...
+                obj.guiElements.editLatMin.Value;
+            
+            % width of pixel in degree
+            degProPixLon = long_width/xPixelWidth;
+            degProPixLat = lat_width/yPixelWidth;
+            
+            % x und y vektoren in grad-abstaenden
+            x = obj.guiElements.editLongMin.Value :...
+                degProPixLon : obj.guiElements.editLongMax.Value;
+            y = obj.guiElements.editLatMax.Value :...
+                -degProPixLat : obj.guiElements.editLatMin.Value;
+            
+            % generate meshgrid
+            [X,Y] = meshgrid(x,y);
+            
+            % P is the estimated power of average transmitter tower.
+            % source: https://www.emf.ethz.ch/de/emf-info/themen/
+            % technik/basisstationsantennen/
+            % sendestaerke-von-basisstationen/
+            P = 7;
+            
+            % determine limit for intensity, since values close to
+            % transmitter tower will go up to infinity
+            intensityLimit = 1e-5;
+            
+            % converting degree to meters applying to following source:
+            % http://www.iaktueller.de/exx.php
+            metersPerDegLong = 71.44e3;
+            metersPerDegLat = 111.13e3;
+            
+            % matrix that will contain intensity values
+            F = zeros(length(y),length(x));
+            
+            for kk = 1:length(lonCurrent)
+                % Intensitaetsabfall fuer einen Punkt auf der Map
+                A = P./(4*pi*((metersPerDegLong*(X-lonCurrent(kk))).^2+...
+                    (metersPerDegLat*(Y-latCurrent(kk))).^2));
+                
+                % Limittieren, da Intensitaet nahe Masten extrem hoch, wodurch die
+                % heatmap-rabge zu gross wird
+                A(A>intensityLimit)=intensityLimit;
+                
+                % Addieren aller Sendemasten
+                F = F + A;
+            end
+
+            figure;
+            obj.heatMap = image(x,y,10*log10(F/1e-12));
+            colormap jet
+            obj.heatMap.AlphaData = 0.4;
+            obj.heatMap.CDataMapping = 'scaled';
+            
         end
         
     end
