@@ -151,25 +151,19 @@ classdef netVision < handle
                 obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
                 obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
                 obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
+            relevantNetwork = (obj.dataBase.celldata.network=='LTE');
+            relevantNetworkCode = (obj.dataBase.celldata.networkCode == 1);
+            
             
             % combine logical vectors for filtering purposes
-            relevantData =  relevantCoords;
+            relevantData =  relevantCoords & relevantNetwork & relevantNetworkCode;
             
             % generate current vectors
             lonCurrent = obj.dataBase.celldata.lon(relevantData);
             latCurrent = obj.dataBase.celldata.lat(relevantData);
             
-            xPixelWidth = 755;
-            yPixelWidth = 652;
-            
-            % converting degree to meters applying to following source:
-            % http://www.iaktueller.de/exx.php
-            metersPerDegLong = 71.44e3;
-            metersPerDegLat = 111.13e3;
-            
-            % determine limit for intensity, since values close to
-            % transmitter tower will go up to infinity
-            intensityLimit = 1e-5;
+            xPixelWidth = round(obj.fig.Position(3)*obj.ax.Position(3));
+            yPixelWidth = round(obj.fig.Position(4)*obj.ax.Position(4));
             
             % width of current axis in degree
             long_width = obj.guiElements.editLongMax.Value -...
@@ -178,8 +172,8 @@ classdef netVision < handle
                 obj.guiElements.editLatMin.Value;
             
             % width of pixel in degree
-            degProPixLat = lat_width/yPixelWidth;
             degProPixLon = long_width/xPixelWidth;
+            degProPixLat = lat_width/yPixelWidth;
             
             % x und y vektoren in grad-abstaenden
             x = obj.guiElements.editLongMin.Value :...
@@ -195,6 +189,15 @@ classdef netVision < handle
             % technik/basisstationsantennen/
             % sendestaerke-von-basisstationen/
             P = 7;
+            
+            % determine limit for intensity, since values close to
+            % transmitter tower will go up to infinity
+            intensityLimit = 1e-5;
+            
+            % converting degree to meters applying to following source:
+            % http://www.iaktueller.de/exx.php
+            metersPerDegLong = 71.44e3;
+            metersPerDegLat = 111.13e3;
             
             % matrix that will contain intensity values
             F = zeros(length(y),length(x));
@@ -213,10 +216,10 @@ classdef netVision < handle
             end
 
             figure;
-            heatMap = image(x,y,10*log10(F/1e-12));
+            obj.heatMap = image(x,y,10*log10(F/1e-12));
             colormap jet
-            %obj.heatMap.AlphaData = 0.4;
-            %obj.heatMap.CDataMapping = 'scaled';
+            obj.heatMap.AlphaData = 0.4;
+            obj.heatMap.CDataMapping = 'scaled';
             
         end
         
