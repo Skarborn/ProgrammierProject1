@@ -93,6 +93,20 @@ classdef netVision < handle
             obj.guiElements.checkboxHeatmap.Layout.Row = 6;
             obj.guiElements.checkboxHeatmap.Layout.Column = [1 2];
             
+            % DROPDOWNS
+            obj.guiElements.dropdownNetwork = uidropdown(grid);
+            obj.guiElements.dropdownNetwork.Items = {'GSM','UMTS','LTE'};
+            obj.guiElements.dropdownNetwork.Value = 'GSM';
+            obj.guiElements.dropdownNetwork.Layout.Row = 10;
+            obj.guiElements.dropdownNetwork.Layout.Column = [1 2];
+            
+            obj.guiElements.dropdownNetworkCode = uidropdown(grid);
+            obj.guiElements.dropdownNetworkCode.Items =...
+                {'Telekom','Vodafone','EPlus','Telefonica'};
+            obj.guiElements.dropdownNetworkCode.Value = 'Telekom';
+            obj.guiElements.dropdownNetworkCode.Layout.Row = 11;
+            obj.guiElements.dropdownNetworkCode.Layout.Column = [1 2];
+            
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
@@ -131,13 +145,18 @@ classdef netVision < handle
         
         function relevantData = getRelevantData(obj)
             % generate logical vector for filtering purposes
+            networkProvider = struct('Telekom',1,'Vodafone',2,...
+                'EPlus',3,'Telefonica',7);
+            
             relevantCoords = ...
                 obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
                 obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
                 obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
                 obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
-            relevantNetwork = (obj.dataBase.celldata.network=='LTE');
-            relevantNetworkCode = (obj.dataBase.celldata.networkCode == 1);
+            relevantNetwork = (obj.dataBase.celldata.network==...
+                obj.guiElements.dropdownNetwork.Value);
+            relevantNetworkCode = (obj.dataBase.celldata.networkCode ==...
+                networkProvider.(obj.guiElements.dropdownNetworkCode.Value));
             
             
             % combine logical vectors for filtering purposes
