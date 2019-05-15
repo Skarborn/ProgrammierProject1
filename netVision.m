@@ -120,6 +120,8 @@ classdef netVision < handle
             % if checkbox is ticked, plot heatmap
             if obj.guiElements.checkboxHeatmap.Value == true
                 obj.drawHeatmap()
+            else
+                obj.heatMap.AlphaData = 0;
             end
             
         end
