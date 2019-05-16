@@ -93,19 +93,68 @@ classdef netVision < handle
             obj.guiElements.checkboxHeatmap.Layout.Row = 6;
             obj.guiElements.checkboxHeatmap.Layout.Column = [1 2];
             
-            % DROPDOWNS
-            obj.guiElements.dropdownNetwork = uidropdown(grid);
-            obj.guiElements.dropdownNetwork.Items = {'GSM','UMTS','LTE'};
-            obj.guiElements.dropdownNetwork.Value = 'GSM';
-            obj.guiElements.dropdownNetwork.Layout.Row = 10;
-            obj.guiElements.dropdownNetwork.Layout.Column = [1 2];
+            % NETWORK CODES
+            obj.guiElements.checkboxTelekom = uicheckbox(grid);
+            obj.guiElements.checkboxTelekom.Text = "Telekom";
+            obj.guiElements.checkboxTelekom.Value = 0;
+            obj.guiElements.checkboxTelekom.Layout.Row = 10;
+            obj.guiElements.checkboxTelekom.Layout.Column = [1 2];
             
-            obj.guiElements.dropdownNetworkCode = uidropdown(grid);
-            obj.guiElements.dropdownNetworkCode.Items =...
-                {'Telekom','Vodafone','EPlus','Telefonica'};
-            obj.guiElements.dropdownNetworkCode.Value = 'Telekom';
-            obj.guiElements.dropdownNetworkCode.Layout.Row = 11;
-            obj.guiElements.dropdownNetworkCode.Layout.Column = [1 2];
+            obj.guiElements.checkboxVodafone = uicheckbox(grid);
+            obj.guiElements.checkboxVodafone.Text = "Vodafone";
+            obj.guiElements.checkboxVodafone.Value = 0;
+            obj.guiElements.checkboxVodafone.Layout.Row = 10;
+            obj.guiElements.checkboxVodafone.Layout.Column = [3 4];
+            
+            obj.guiElements.checkboxEPlus = uicheckbox(grid);
+            obj.guiElements.checkboxEPlus.Text = "E-Plus";
+            obj.guiElements.checkboxEPlus.Value = 0;
+            obj.guiElements.checkboxEPlus.Layout.Row = 10;
+            obj.guiElements.checkboxEPlus.Layout.Column = [5 6];
+            
+            obj.guiElements.checkboxTelefonica = uicheckbox(grid);
+            obj.guiElements.checkboxTelefonica.Text = "Telefonica";
+            obj.guiElements.checkboxTelefonica.Value = 0;
+            obj.guiElements.checkboxTelefonica.Layout.Row = 11;
+            obj.guiElements.checkboxTelefonica.Layout.Column = [1 2];
+            
+            obj.guiElements.checkboxElse = uicheckbox(grid);
+            obj.guiElements.checkboxElse.Text = "Alle anderen Anbieter";
+            obj.guiElements.checkboxElse.Value = 0;
+            obj.guiElements.checkboxElse.Layout.Row = 11;
+            obj.guiElements.checkboxElse.Layout.Column = [3 4];
+            
+            % NETWORKS
+            obj.guiElements.checkboxLTE = uicheckbox(grid);
+            obj.guiElements.checkboxLTE.Text = "LTE";
+            obj.guiElements.checkboxLTE.Value = 0;
+            obj.guiElements.checkboxLTE.Layout.Row = 13;
+            obj.guiElements.checkboxLTE.Layout.Column = [1 2];
+            
+            obj.guiElements.checkboxGSM = uicheckbox(grid);
+            obj.guiElements.checkboxGSM.Text = "GSM";
+            obj.guiElements.checkboxGSM.Value = 0;
+            obj.guiElements.checkboxGSM.Layout.Row = 13;
+            obj.guiElements.checkboxGSM.Layout.Column = [3 4];
+            
+            obj.guiElements.checkboxUMTS = uicheckbox(grid);
+            obj.guiElements.checkboxUMTS.Text = "UMTS";
+            obj.guiElements.checkboxUMTS.Value = 0;
+            obj.guiElements.checkboxUMTS.Layout.Row = 13;
+            obj.guiElements.checkboxUMTS.Layout.Column = [5 6];            
+            
+%             obj.guiElements.dropdownNetwork = uidropdown(grid);
+%             obj.guiElements.dropdownNetwork.Items = {'GSM','UMTS','LTE'};
+%             obj.guiElements.dropdownNetwork.Value = 'GSM';
+%             obj.guiElements.dropdownNetwork.Layout.Row = 10;
+%             obj.guiElements.dropdownNetwork.Layout.Column = [1 2];
+%             
+%             obj.guiElements.dropdownNetworkCode = uidropdown(grid);
+%             obj.guiElements.dropdownNetworkCode.Items =...
+%                 {'Telekom','Vodafone','EPlus','Telefonica'};
+%             obj.guiElements.dropdownNetworkCode.Value = 'Telekom';
+%             obj.guiElements.dropdownNetworkCode.Layout.Row = 11;
+%             obj.guiElements.dropdownNetworkCode.Layout.Column = [1 2];
             
             % BUTTONS
             applyChanges = uibutton(grid);
@@ -141,6 +190,7 @@ classdef netVision < handle
                 obj.drawHeatmap()
             end
             
+            
         end
         
         function relevantData = getRelevantData(obj)
@@ -153,10 +203,28 @@ classdef netVision < handle
                 obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
                 obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
                 obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
-            relevantNetwork = (obj.dataBase.celldata.network==...
-                obj.guiElements.dropdownNetwork.Value);
-            relevantNetworkCode = (obj.dataBase.celldata.networkCode ==...
-                networkProvider.(obj.guiElements.dropdownNetworkCode.Value));
+            
+            if obj.guiElements.checkboxTelekom.Value == true
+                relevantNetwork = (obj.dataBase.celldata.networkCode == 1);
+            elseif obj.guiElements.checkboxVodafone.Value == true
+                relevantNetwork = (obj.dataBase.celldata.networkCode == 2);
+            elseif obj.guiElements.checkboxEPlus.Value == true
+                relevantNetwork = (obj.dataBase.celldata.networkCode == 3);
+            elseif obj.guiElements.checkboxTelefonica.Value == true
+                relevantNetwork = (obj.dataBase.celldata.networkCode == 7);
+            elseif obj.guiElements.checkboxElse.Value == true
+                relevantNetwork = (obj.dataBase.celldata.networkCode > 3 &&...
+                obj.dataBase.celldata.networkCode < 7 &&...
+                obj.dataBase.celldata.networkCode > 7);
+            end
+            
+            if obj.guiElements.checkboxLTE.Value == true
+                relevantNetworkCode = obj.dataBase.celldata.networkCode == 'LTE';
+            elseif obj.guiElements.checkboxGSM.Value == true
+                relevantNetworkCode = obj.dataBase.celldata.networkCode == 'GSM';
+            elseif obj.guiElements.checkboxUMTS.Value == true
+                relevantNetworkCode = obj.dataBase.celldata.networkCode == 'UMTS';
+            end
             
             
             % combine logical vectors for filtering purposes
