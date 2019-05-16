@@ -141,9 +141,24 @@ classdef netVision < handle
             % generate current vectors
             lonCurrent = obj.dataBase.celldata.lon(relevantData);
             latCurrent = obj.dataBase.celldata.lat(relevantData);
+            networkCurrent = ...
+                obj.dataBase.celldata.networkCode(relevantData);
             
-            obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
-                'r.','MarkerSize',18);
+            if networkCurrent == 1
+                plot(lonCurrent,latCurrent,'m.','MarkerSize',15)
+            
+            elseif networkCurrent == 2
+                plot(lonCurrent,latCurrent,'r.','MarkerSize', 15)
+            
+            elseif networkCurrent == 3
+                plot(lonCurrent,latCurrent,'.', 'Color', [0, 0.5, 0],'MarkerSize', 15)
+            
+            elseif networkCurrent == 7
+                plot(lonCurrent,latCurrent,'b.','MarkerSize', 15)
+                
+            else
+                plot(lonCurrent,latCurrent,'k.','MarkerSize', 15)
+            end
         end
         
         function drawHeatmap(obj)
