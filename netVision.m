@@ -55,34 +55,38 @@ classdef netVision < handle
             obj.guiElements.editLongMin = uieditfield(grid,"numeric");
             obj.guiElements.editLongMin.Limits = [0 360];
             obj.guiElements.editLongMin.Value = longitudinalMin;
-            obj.guiElements.editLongMin.Layout.Row = 1;
+            obj.guiElements.editLongMin.Layout.Row = 2;
             obj.guiElements.editLongMin.Layout.Column = 1;
             obj.guiElements.editLongMin.Tooltip = "min longitudinal";
+            text = 'Longitudinal Koordinaten';
+            lbl = uilabel(obj.uifig,'Text',text,'Position',[12 720 150 50]);
             
             obj.guiElements.editLongMax = uieditfield(grid,"numeric");
             obj.guiElements.editLongMax.Limits = [0 360];
             obj.guiElements.editLongMax.Value = longitudinalMax;
-            obj.guiElements.editLongMax.Layout.Row = 1;
+            obj.guiElements.editLongMax.Layout.Row = 2;
             obj.guiElements.editLongMax.Layout.Column = 2;
             obj.guiElements.editLongMax.Tooltip = "max longitudinal";
+            text2 = 'Lateral Koordinaten';
+            lbl = uilabel(obj.uifig,'Text',text2,'Position',[12 623 150 50]);
             
             obj.guiElements.editLatMin = uieditfield(grid,"numeric");
             obj.guiElements.editLatMin.Limits = [0 360];
             obj.guiElements.editLatMin.Value = lateralMin;
-            obj.guiElements.editLatMin.Layout.Row = 2;
+            obj.guiElements.editLatMin.Layout.Row = 4;
             obj.guiElements.editLatMin.Layout.Column = 1;
             obj.guiElements.editLatMin.Tooltip = "min lateral";
             
             obj.guiElements.editLatMax = uieditfield(grid,"numeric");
             obj.guiElements.editLatMax.Limits = [0 360];
             obj.guiElements.editLatMax.Value = lateralMax;
-            obj.guiElements.editLatMax.Layout.Row = 2;
+            obj.guiElements.editLatMax.Layout.Row = 4;
             obj.guiElements.editLatMax.Layout.Column = 2;
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
             % CHECKBOXES
             obj.guiElements.checkboxDots = uicheckbox(grid);
-            obj.guiElements.checkboxDots.Text = "Punkte";
+            obj.guiElements.checkboxDots.Text = "Funktürme";
             obj.guiElements.checkboxDots.Value = 0;
             obj.guiElements.checkboxDots.Layout.Row = 5;
             obj.guiElements.checkboxDots.Layout.Column = [1 2];
