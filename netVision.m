@@ -19,13 +19,15 @@ classdef netVision < handle
             
             % generate figure and grid used for GUI
             obj.uifig = uifigure("Name","netVision");
-            obj.uifig.Position = [0 100 700 700];
-            grid = uigridlayout(obj.uifig, [8, 8]);
+            obj.uifig.Position = [0 100 1000 800];
+            grid = uigridlayout(obj.uifig, [16, 20]);
             
             % generate axes handle and map
-            obj.fig = figure();
-            obj.fig.Position = [700 100 700 700];
-            obj.ax = axes(obj.fig);
+            %obj.fig = figure();
+            %obj.fig.Position = [700 100 700 700];
+            obj.ax = uiaxes(grid);
+            obj.ax.Layout.Row = [1 16];
+            obj.ax.Layout.Column = [5 20];
             
             % generate Map of Oldenburg
             longitudinalMin = 8.18;
@@ -40,13 +42,14 @@ classdef netVision < handle
                 "maxLat", lateralMax);
             
             obj.myMap = Map(initialCoords,'hot',obj.ax,-2);
-            hold on
+            %hold on
             
             % GENERATE GUI ELEMENTS
             
             % edit fields for entering coordinates
 
             guiElements = struct();
+            
             
             % EDIT FIELDS
             obj.guiElements.editLongMin = uieditfield(grid,"numeric");
@@ -82,19 +85,33 @@ classdef netVision < handle
             obj.guiElements.checkboxDots.Text = "Punkte";
             obj.guiElements.checkboxDots.Value = 0;
             obj.guiElements.checkboxDots.Layout.Row = 5;
-            obj.guiElements.checkboxDots.Layout.Column = 7;
+            obj.guiElements.checkboxDots.Layout.Column = [1 2];
             
             obj.guiElements.checkboxHeatmap = uicheckbox(grid);
             obj.guiElements.checkboxHeatmap.Text = "Heatmap";
             obj.guiElements.checkboxHeatmap.Value = 0;
             obj.guiElements.checkboxHeatmap.Layout.Row = 6;
-            obj.guiElements.checkboxHeatmap.Layout.Column = 7;
+            obj.guiElements.checkboxHeatmap.Layout.Column = [1 2];
+            
+            % DROPDOWNS
+            obj.guiElements.dropdownNetwork = uidropdown(grid);
+            obj.guiElements.dropdownNetwork.Items = {'GSM','UMTS','LTE'};
+            obj.guiElements.dropdownNetwork.Value = 'GSM';
+            obj.guiElements.dropdownNetwork.Layout.Row = 10;
+            obj.guiElements.dropdownNetwork.Layout.Column = [1 2];
+            
+            obj.guiElements.dropdownNetworkCode = uidropdown(grid);
+            obj.guiElements.dropdownNetworkCode.Items =...
+                {'Telekom','Vodafone','EPlus','Telefonica'};
+            obj.guiElements.dropdownNetworkCode.Value = 'Telekom';
+            obj.guiElements.dropdownNetworkCode.Layout.Row = 11;
+            obj.guiElements.dropdownNetworkCode.Layout.Column = [1 2];
             
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
             applyChanges.Layout.Row = 8;
-            applyChanges.Layout.Column = [7 8];
+            applyChanges.Layout.Column = [1 2];
             applyChanges.ButtonPushedFcn = @obj.apply;
             
         end
@@ -109,79 +126,83 @@ classdef netVision < handle
                     "maxLat", obj.guiElements.editLatMax.Value);
             end
             
-            % if checkbox is ticked, plot dots, otherwise delete dots
+            % delete current overlays
+            obj.dotMap.XData = [];
+            obj.dotMap.YData = [];
+            obj.heatMap.AlphaData = 0;
+            
+            % if checkbox is ticked, plot dots
             if obj.guiElements.checkboxDots.Value == true
                 obj.drawDots()
-            else
-                obj.dotMap.XData = [];
-                obj.dotMap.YData = [];
             end
             
             % if checkbox is ticked, plot heatmap
-            if obj.guiElements.checkboxHeatmap.Value == true
+            if obj.guiElements.checkboxHeatmap.Value == true                
                 obj.drawHeatmap()
-            else
-                obj.heatMap.AlphaData = 0;
             end
             
         end
         
-        function drawDots(obj)
-            
+        function relevantData = getRelevantData(obj)
             % generate logical vector for filtering purposes
+            networkProvider = struct('Telekom',1,'Vodafone',2,...
+                'EPlus',3,'Telefonica',7);
+            
             relevantCoords = ...
                 obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
                 obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
                 obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
                 obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
+            relevantNetwork = (obj.dataBase.celldata.network==...
+                obj.guiElements.dropdownNetwork.Value);
+            relevantNetworkCode = (obj.dataBase.celldata.networkCode ==...
+                networkProvider.(obj.guiElements.dropdownNetworkCode.Value));
+            
             
             % combine logical vectors for filtering purposes
-            relevantData =  relevantCoords;
+            relevantData =  relevantCoords & relevantNetwork & relevantNetworkCode;
+
+        end
+        
+        function drawDots(obj)
             
             % generate current vectors
-            lonCurrent = obj.dataBase.celldata.lon(relevantData);
-            latCurrent = obj.dataBase.celldata.lat(relevantData);
-            networkCurrent = ...
-                obj.dataBase.celldata.networkCode(relevantData);
             
+            
+            lonCurrent = obj.dataBase.celldata.lon(obj.getRelevantData());
+            latCurrent = obj.dataBase.celldata.lat(obj.getRelevantData());
+            networkCurrent = ...
+                obj.dataBase.celldata.networkCode(obj.getRelevantData());
             if networkCurrent == 1
-                plot(lonCurrent,latCurrent,'m.','MarkerSize',15)
+                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+                    'm.','MarkerSize',15);
             
             elseif networkCurrent == 2
-                plot(lonCurrent,latCurrent,'r.','MarkerSize', 15)
+                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+                    'r.','MarkerSize', 15);
             
             elseif networkCurrent == 3
-                plot(lonCurrent,latCurrent,'.', 'Color', [0, 0.5, 0],'MarkerSize', 15)
+                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+                    '.', 'Color', [0, 0.5, 0],'MarkerSize', 15);
             
             elseif networkCurrent == 7
-                plot(lonCurrent,latCurrent,'b.','MarkerSize', 15)
+                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+                    'b.','MarkerSize', 15);
                 
             else
-                plot(lonCurrent,latCurrent,'k.','MarkerSize', 15)
+                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+                    'k.','MarkerSize', 15);
             end
         end
         
         function drawHeatmap(obj)
             
-            % generate logical vector for filtering purposes
-            relevantCoords = ...
-                obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
-                obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
-                obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
-                obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
-            relevantNetwork = (obj.dataBase.celldata.network=='LTE');
-            relevantNetworkCode = (obj.dataBase.celldata.networkCode == 1);
-            
-            
-            % combine logical vectors for filtering purposes
-            relevantData =  relevantCoords & relevantNetwork & relevantNetworkCode;
-            
             % generate current vectors
-            lonCurrent = obj.dataBase.celldata.lon(relevantData);
-            latCurrent = obj.dataBase.celldata.lat(relevantData);
+            lonCurrent = obj.dataBase.celldata.lon(obj.getRelevantData());
+            latCurrent = obj.dataBase.celldata.lat(obj.getRelevantData());
             
-            xPixelWidth = round(obj.fig.Position(3)*obj.ax.Position(3));
-            yPixelWidth = round(obj.fig.Position(4)*obj.ax.Position(4));
+            xPixelWidth = obj.ax.Position(3);
+            yPixelWidth = obj.ax.Position(4);
             
             % width of current axis in degree
             long_width = obj.guiElements.editLongMax.Value -...
