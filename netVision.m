@@ -52,14 +52,16 @@ classdef netVision < handle
             
             
             % EDIT FIELDS
+            text_lonCoord = 'Longitudinal Koordinaten:';
+            label_lonCoord = uilabel(obj.uifig,'Text',...
+                text_lonCoord,'Position',[12 720 150 50]);
+           
             obj.guiElements.editLongMin = uieditfield(grid,"numeric");
             obj.guiElements.editLongMin.Limits = [0 360];
             obj.guiElements.editLongMin.Value = longitudinalMin;
             obj.guiElements.editLongMin.Layout.Row = 2;
             obj.guiElements.editLongMin.Layout.Column = 1;
             obj.guiElements.editLongMin.Tooltip = "min longitudinal";
-            text = 'Longitudinal Koordinaten:';
-            lbl = uilabel(obj.uifig,'Text',text,'Position',[12 720 150 50]);
             
             obj.guiElements.editLongMax = uieditfield(grid,"numeric");
             obj.guiElements.editLongMax.Limits = [0 360];
@@ -67,8 +69,10 @@ classdef netVision < handle
             obj.guiElements.editLongMax.Layout.Row = 2;
             obj.guiElements.editLongMax.Layout.Column = 2;
             obj.guiElements.editLongMax.Tooltip = "max longitudinal";
-            text2 = 'Lateral Koordinaten:';
-            lbl2 = uilabel(obj.uifig,'Text',text2,'Position',[12 623 150 50]);
+            text_latCoord = 'Lateral Koordinaten:';
+            
+            label_latCoord = uilabel(obj.uifig,'Text'...
+                ,text_latCoord,'Position',[12 623 150 50]);
             
             obj.guiElements.editLatMin = uieditfield(grid,"numeric");
             obj.guiElements.editLatMin.Limits = [0 360];
@@ -85,8 +89,10 @@ classdef netVision < handle
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
             % CHECKBOXES
-            text3 = 'Anzeigeoptionen:';
-            lbl3 = uilabel(obj.uifig,'Text',text3,'Position',[12 522 150 50]);
+            text_displayOptions = 'Anzeigeoptionen:';
+            label_displayOptions = uilabel(obj.uifig,...
+                'Text',text_displayOptions,'Position',[12 522 150 50]);
+            
             obj.guiElements.checkboxDots = uicheckbox(grid);
             obj.guiElements.checkboxDots.Text = "Funktürme";
             obj.guiElements.checkboxDots.Value = 0;
@@ -100,8 +106,10 @@ classdef netVision < handle
             obj.guiElements.checkboxHeatmap.Layout.Column = [1 2];
             
             % NETWORK CODES
-            text4 = 'Netzwerkanbieter:';
-            lbl4 = uilabel(obj.uifig,'Text',text4,'Position',[12 372 150 50]);
+            text_networkCode = 'Netzwerkanbieter:';
+            label_networkCode =uilabel(obj.uifig,...
+                'Text',text_networkCode,'Position',[12 373 150 50]);
+            
             obj.guiElements.checkboxTelekom = uicheckbox(grid);
             obj.guiElements.checkboxTelekom.Text = "Telekom";
             obj.guiElements.checkboxTelekom.Value = 0;
@@ -133,6 +141,10 @@ classdef netVision < handle
             obj.guiElements.checkboxElse.Layout.Column = [1 2];
             
             % NETWORKS
+            text_network = 'Netzwerkart:';
+            label_network =uilabel(obj.uifig,...
+                'Text',text_network,'Position',[12 180 150 50]);
+            
             obj.guiElements.checkboxLTE = uicheckbox(grid);
             obj.guiElements.checkboxLTE.Text = "LTE";
             obj.guiElements.checkboxLTE.Value = 0;
