@@ -110,8 +110,8 @@ classdef netVision < handle
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
-            applyChanges.Layout.Row = 8;
-            applyChanges.Layout.Column = [1 2];
+            applyChanges.Layout.Row = [14 15];
+            applyChanges.Layout.Column = [1 4];
             applyChanges.ButtonPushedFcn = @obj.apply;
             
         end
