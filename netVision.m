@@ -58,7 +58,7 @@ classdef netVision < handle
             obj.guiElements.editLongMin.Layout.Row = 2;
             obj.guiElements.editLongMin.Layout.Column = 1;
             obj.guiElements.editLongMin.Tooltip = "min longitudinal";
-            text = 'Longitudinal Koordinaten';
+            text = 'Longitudinal Koordinaten:';
             lbl = uilabel(obj.uifig,'Text',text,'Position',[12 720 150 50]);
             
             obj.guiElements.editLongMax = uieditfield(grid,"numeric");
@@ -67,8 +67,8 @@ classdef netVision < handle
             obj.guiElements.editLongMax.Layout.Row = 2;
             obj.guiElements.editLongMax.Layout.Column = 2;
             obj.guiElements.editLongMax.Tooltip = "max longitudinal";
-            text2 = 'Lateral Koordinaten';
-            lbl = uilabel(obj.uifig,'Text',text2,'Position',[12 623 150 50]);
+            text2 = 'Lateral Koordinaten:';
+            lbl2 = uilabel(obj.uifig,'Text',text2,'Position',[12 623 150 50]);
             
             obj.guiElements.editLatMin = uieditfield(grid,"numeric");
             obj.guiElements.editLatMin.Limits = [0 360];
@@ -85,48 +85,52 @@ classdef netVision < handle
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
             % CHECKBOXES
+            text3 = 'Anzeigeoptionen:';
+            lbl3 = uilabel(obj.uifig,'Text',text3,'Position',[12 522 150 50]);
             obj.guiElements.checkboxDots = uicheckbox(grid);
             obj.guiElements.checkboxDots.Text = "Funktürme";
             obj.guiElements.checkboxDots.Value = 0;
-            obj.guiElements.checkboxDots.Layout.Row = 5;
+            obj.guiElements.checkboxDots.Layout.Row = 6;
             obj.guiElements.checkboxDots.Layout.Column = [1 2];
             
             obj.guiElements.checkboxHeatmap = uicheckbox(grid);
             obj.guiElements.checkboxHeatmap.Text = "Heatmap";
             obj.guiElements.checkboxHeatmap.Value = 0;
-            obj.guiElements.checkboxHeatmap.Layout.Row = 6;
+            obj.guiElements.checkboxHeatmap.Layout.Row = 7;
             obj.guiElements.checkboxHeatmap.Layout.Column = [1 2];
             
             % NETWORK CODES
+            text4 = 'Netzwerkanbieter:';
+            lbl4 = uilabel(obj.uifig,'Text',text4,'Position',[12 372 150 50]);
             obj.guiElements.checkboxTelekom = uicheckbox(grid);
             obj.guiElements.checkboxTelekom.Text = "Telekom";
             obj.guiElements.checkboxTelekom.Value = 0;
-            obj.guiElements.checkboxTelekom.Layout.Row = 10;
+            obj.guiElements.checkboxTelekom.Layout.Row = 9;
             obj.guiElements.checkboxTelekom.Layout.Column = [1 2];
             
             obj.guiElements.checkboxVodafone = uicheckbox(grid);
             obj.guiElements.checkboxVodafone.Text = "Vodafone";
             obj.guiElements.checkboxVodafone.Value = 0;
-            obj.guiElements.checkboxVodafone.Layout.Row = 10;
+            obj.guiElements.checkboxVodafone.Layout.Row = 9;
             obj.guiElements.checkboxVodafone.Layout.Column = [3 4];
             
             obj.guiElements.checkboxEPlus = uicheckbox(grid);
             obj.guiElements.checkboxEPlus.Text = "E-Plus";
             obj.guiElements.checkboxEPlus.Value = 0;
             obj.guiElements.checkboxEPlus.Layout.Row = 10;
-            obj.guiElements.checkboxEPlus.Layout.Column = [5 6];
+            obj.guiElements.checkboxEPlus.Layout.Column = [3 4];
             
             obj.guiElements.checkboxTelefonica = uicheckbox(grid);
             obj.guiElements.checkboxTelefonica.Text = "Telefonica";
             obj.guiElements.checkboxTelefonica.Value = 0;
-            obj.guiElements.checkboxTelefonica.Layout.Row = 11;
+            obj.guiElements.checkboxTelefonica.Layout.Row = 10;
             obj.guiElements.checkboxTelefonica.Layout.Column = [1 2];
             
             obj.guiElements.checkboxElse = uicheckbox(grid);
             obj.guiElements.checkboxElse.Text = "Alle anderen Anbieter";
             obj.guiElements.checkboxElse.Value = 0;
             obj.guiElements.checkboxElse.Layout.Row = 11;
-            obj.guiElements.checkboxElse.Layout.Column = [3 4];
+            obj.guiElements.checkboxElse.Layout.Column = [1 2];
             
             % NETWORKS
             obj.guiElements.checkboxLTE = uicheckbox(grid);
@@ -163,7 +167,7 @@ classdef netVision < handle
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
-            applyChanges.Layout.Row = [14 15];
+            applyChanges.Layout.Row = [15 16];
             applyChanges.Layout.Column = [1 4];
             applyChanges.ButtonPushedFcn = @obj.apply;
             
