@@ -255,7 +255,7 @@ classdef netVision < handle
             end
 
             obj.heatMap = image(obj.ax,x,y,10*log10(F/1e-12));
-            colormap jet
+            colormap(obj.ax, 'jet');
             obj.heatMap.AlphaData = 0.3;
             obj.heatMap.CDataMapping = 'scaled';
             
