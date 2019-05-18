@@ -1,7 +1,6 @@
 classdef netVision < handle
+    
     properties
-        fig
-        uifig
         ax
         
         dataBase
@@ -17,15 +16,16 @@ classdef netVision < handle
         
         guiElements
     end
+    
     methods
         function obj = netVision()
             % read in celldata
             obj.dataBase = load("celldata.mat");
             
             % generate figure and grid used for GUI
-            obj.uifig = uifigure("Name","netVision");
-            obj.uifig.Position = [0 100 1000 800];
-            grid = uigridlayout(obj.uifig, [16, 20]);
+            uifig = uifigure("Name","netVision");
+            uifig.Position = [0 100 1000 800];
+            grid = uigridlayout(uifig, [16, 20]);
             
             % generate axes handle and map
             obj.ax = uiaxes(grid);
@@ -52,11 +52,6 @@ classdef netVision < handle
             % edit fields for entering coordinates
             
             guiElements = struct();
-            
-            % EDIT FIELDS
-            text_lonCoord = 'Longitudinal Koordinaten:';
-            label_lonCoord = uilabel(obj.uifig,'Text',...
-                text_lonCoord,'Position',[12 720 150 50]);
             
             % NAMES FOR CONTROL ELEMENTS
             obj.guiElements.label_lonCoord = uilabel(grid);
@@ -219,7 +214,7 @@ classdef netVision < handle
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
-            applyChanges.Layout.Row = [16];
+            applyChanges.Layout.Row = 16;
             applyChanges.Layout.Column = [1 4];
             applyChanges.ButtonPushedFcn = @obj.apply;
             
@@ -252,17 +247,14 @@ classdef netVision < handle
         end
         
         function relevantData = getRelevantData(obj)
-
-            % generate logical vector for filtering purposes
-            networkProvider = struct('Telekom',1,'Vodafone',2,...
-                'EPlus',3,'Telefonica',7);
-            
+            % generate logical vectors for filtering purposes
             
             relevantCoords = ...
                 obj.guiElements.editLongMin.Value <= obj.dataBase.celldata.lon &...
                 obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
                 obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
                 obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
+            
             relevantNetwork = zeros(length(relevantCoords),1);
             relevantNetworkType = zeros(length(relevantCoords),1);
             
@@ -302,13 +294,14 @@ classdef netVision < handle
                     obj.dataBase.celldata.network == 'UMTS');
             end
             
-            % combine logical vectors for filtering purposes
+            % combine all logical veectors
             relevantData =  relevantCoords & relevantNetwork & relevantNetworkType;
         end
         
         function drawDots(obj)
+            % plot transmitter tower in different colors according
+            % to network provider
 
-            % generate current vectors
             if obj.guiElements.checkboxTelekom.Value == true
                 obj.dotMapTelekom = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData()&obj.dataBase.celldata.networkCode==1),...
@@ -403,15 +396,14 @@ classdef netVision < handle
             F = zeros(length(y),length(x));
             
             for kk = 1:length(lonCurrent)
-                % Intensitaetsabfall fuer einen Punkt auf der Map
+                % calculating intensity around transmitter tower
                 A = P./(4*pi*((metersPerDegLong*(X-lonCurrent(kk))).^2+...
                     (metersPerDegLat*(Y-latCurrent(kk))).^2));
                 
-                % Limittieren, da Intensitaet nahe Masten extrem hoch, wodurch die
-                % heatmap-rabge zu gross wird
+                % values close to tower go up to infinity -> set limit
                 A(A>intensityLimit)=intensityLimit;
                 
-                % Addieren aller Sendemasten
+                % add matrixes of all towers
                 F = F + A;
             end
             
