@@ -79,22 +79,27 @@ classdef netVision < handle
             
             obj.guiElements.label_lonCoord = uilabel(grid);
             obj.guiElements.label_lonCoord.Text = ...
+                'Karten Typ: ';
+            obj.guiElements.label_lonCoord.Layout.Row = 6;
+            obj.guiElements.label_lonCoord.Layout.Column = [3 4];
+            
+            obj.guiElements.label_lonCoord = uilabel(grid);
+            obj.guiElements.label_lonCoord.Text = ...
                 'Netzwerkanbieter: ';
             obj.guiElements.label_lonCoord.Layout.Row = 8;
             obj.guiElements.label_lonCoord.Layout.Column = [1 4];
             
-
             obj.guiElements.label_lonCoord = uilabel(grid);
             obj.guiElements.label_lonCoord.Text = ...
                 'Netzwerkart: ';
             obj.guiElements.label_lonCoord.Layout.Row = 12;
             obj.guiElements.label_lonCoord.Layout.Column = [1 4];
             
-            obj.guiElements.label_Slider = uilabel(grid);
-            obj.guiElements.label_Slider.Text = ...
+            obj.guiElements.label_lonCoord = uilabel(grid);
+            obj.guiElements.label_lonCoord.Text = ...
                 'Deckkraft der Heatmap: ';
-            obj.guiElements.label_Slider.Layout.Row = 14;
-            obj.guiElements.label_SLider.Layout.Column = [1 4];
+            obj.guiElements.label_lonCoord.Layout.Row = 14;
+            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
             
             
             % EDIT COORDS
@@ -197,8 +202,18 @@ classdef netVision < handle
             obj.guiElements.SliderIntensity.Value = 0.3;
             obj.guiElements.SliderIntensity.Layout.Row = 15;
             obj.guiElements.SliderIntensity.Layout.Column = [1 4];
-            obj.guiElements.SliderIntensity.ValueChangingFcn = ...
+            obj.guiElements.SliderIntensity.ValueChangedFcn = ...
                 @obj.setAlphaData;
+            
+            % DROPDOWN FOR MAP TYPE
+            obj.guiElements.DropdownMapType = uidropdown(grid);
+            obj.guiElements.DropdownMapType.Items = ...
+                {'hot', 'osm', 'ocm', 'opm', 'landscape', 'outdoors'};
+            obj.guiElements.DropdownMapType.Value = 'hot';
+            obj.guiElements.DropdownMapType.ValueChangedFcn = ...
+                @obj.setMapType;
+            obj.guiElements.DropdownMapType.Layout.Row = 7;
+            obj.guiElements.DropdownMapType.Layout.Column = [3 4];
 
 
             % BUTTONS
