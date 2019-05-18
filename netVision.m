@@ -279,7 +279,7 @@ classdef netVision < handle
                     obj.dataBase.celldata.network == 'UMTS');
             end
             
-            % combine all logical veectors
+            % combine all logical vectors
             relevantData =  relevantCoords & relevantNetwork & relevantNetworkType;
         end
         
