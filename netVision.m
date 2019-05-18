@@ -193,6 +193,8 @@ classdef netVision < handle
             obj.guiElements.SliderIntensity.Value = 0.3;
             obj.guiElements.SliderIntensity.Layout.Row = 15;
             obj.guiElements.SliderIntensity.Layout.Column = [1 4];
+            obj.guiElements.SliderIntensity.ValueChangingFcn = ...
+                @obj.setAlphaData;
 
             
             % BUTTONS
@@ -322,6 +324,10 @@ classdef netVision < handle
             obj.guiElements.checkboxElse.Value = 0;
             
         end
+        function setAlphaData(obj, event, ~)
+            obj.guiElements.SliderIntensity.Value = event.Value;
+            obj.heatMap.AlphaData = obj.guiElements.SliderIntensity.Value;
+        end
         
         function drawHeatmap(obj)
             
@@ -384,7 +390,6 @@ classdef netVision < handle
             
             obj.heatMap = image(obj.ax,x,y,10*log10(F/1e-12));
             colormap(obj.ax, 'jet');
-            obj.heatMap.AlphaData = 0.3;
             obj.heatMap.CDataMapping = 'scaled';
             
         end
