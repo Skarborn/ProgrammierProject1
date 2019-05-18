@@ -47,9 +47,13 @@ classdef netVision < handle
             % GENERATE GUI ELEMENTS
             
             % edit fields for entering coordinates
-
+            
             guiElements = struct();
             
+            % EDIT FIELDS
+            text_lonCoord = 'Longitudinal Koordinaten:';
+            label_lonCoord = uilabel(obj.uifig,'Text',...
+                text_lonCoord,'Position',[12 720 150 50]);
             
             % NAMES FOR CONTROL ELEMENTS
             obj.guiElements.label_lonCoord = uilabel(grid);
@@ -189,6 +193,7 @@ classdef netVision < handle
             obj.guiElements.SliderIntensity.Value = 0.3;
             obj.guiElements.SliderIntensity.Layout.Row = 15;
             obj.guiElements.SliderIntensity.Layout.Column = [1 4];
+
             
             % BUTTONS
             applyChanges = uibutton(grid);
@@ -220,7 +225,7 @@ classdef netVision < handle
             end
             
             % if checkbox is ticked, plot heatmap
-            if obj.guiElements.checkboxHeatmap.Value == true                
+            if obj.guiElements.checkboxHeatmap.Value == true
                 obj.drawHeatmap()
             end
             
@@ -228,6 +233,7 @@ classdef netVision < handle
         end
         
         function relevantData = getRelevantData(obj)
+
             % generate logical vector for filtering purposes
             networkProvider = struct('Telekom',1,'Vodafone',2,...
                 'EPlus',3,'Telefonica',7);
@@ -238,8 +244,8 @@ classdef netVision < handle
                 obj.guiElements.editLongMax.Value >= obj.dataBase.celldata.lon & ...
                 obj.guiElements.editLatMin.Value <= obj.dataBase.celldata.lat &...
                 obj.guiElements.editLatMax.Value >= obj.dataBase.celldata.lat ;
-            relevantNetwork = zeros(size(relevantCoords));
-            relevantNetworkType = zeros(size(relevantCoords));
+            relevantNetwork = zeros(length(relevantCoords),1);
+            relevantNetworkType = zeros(length(relevantCoords),1);
             
             if obj.guiElements.checkboxTelekom.Value == true
                 relevantNetwork = relevantNetwork |...
@@ -256,60 +262,65 @@ classdef netVision < handle
             elseif obj.guiElements.checkboxElse.Value == true
                 relevantNetwork = relevantNetwork |...
                     (obj.dataBase.celldata.networkCode(relevantCoords) > 3 &&...
-                obj.dataBase.celldata.networkCode(relevantCoords) < 7 &&...
-                obj.dataBase.celldata.networkCode(relevantCoords) > 7);
+                    obj.dataBase.celldata.networkCode(relevantCoords) < 7 &&...
+                    obj.dataBase.celldata.networkCode(relevantCoords) > 7);
             end
             
             if obj.guiElements.checkboxLTE.Value == true
-                relevantNetworkType = relevantNetworkType | ...
-                    obj.dataBase.celldata.networkCode == 'LTE';
+                relevantNetworkType = (relevantNetworkType | ...
+                    obj.dataBase.celldata.network == 'LTE');
             elseif obj.guiElements.checkboxGSM.Value == true
-                relevantNetworkType = relevantNetworkType | ...
-                    obj.dataBase.celldata.networkCode(relevantCoords) == 'GSM';
+                relevantNetworkType = (relevantNetworkType | ...
+                    obj.dataBase.celldata.network(relevantCoords) == 'GSM');
             elseif obj.guiElements.checkboxUMTS.Value == true
-                relevantNetworkType = relevantNetworkType | ...
-                    obj.dataBase.celldata.networkCode(relevantCoords) == 'UMTS';
+                relevantNetworkType = (relevantNetworkType | ...
+                    obj.dataBase.celldata.network(relevantCoords) == 'UMTS');
             end
-            
             
             % combine logical vectors for filtering purposes
             relevantData =  relevantCoords & relevantNetwork & relevantNetworkType;
-
         end
         
         function drawDots(obj)
-            
+
             % generate current vectors
-            
-            
-            lonCurrent = obj.dataBase.celldata.lon(obj.getRelevantData());
-            latCurrent = obj.dataBase.celldata.lat(obj.getRelevantData());
-            networkCurrent = ...
-                obj.dataBase.celldata.networkCode(obj.getRelevantData());
-            
             if obj.guiElements.checkboxTelekom.Value == true
-                obj.dotMap = plot(obj.ax,lonCurrent(obj.getRelevantData() & ...
-                    (obj.dataBase.celldata.networkCode == 1)),...
-                    latCurrent(obj.getRelevantData() & ...
-                    (obj.dataBase.celldata.networkCode == 1)),...
+                obj.dotMap = plot(obj.ax,...
+                    obj.dataBase.celldata.lon(obj.getRelevantData()&obj.dataBase.celldata.networkCode==1),...
+                    obj.dataBase.celldata.lat(obj.getRelevantData()&obj.dataBase.celldata.networkCode==1),...
                     'm.','MarkerSize',15);
-            
-            elseif networkCurrent == 2
-                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
-                    'r.','MarkerSize', 15);
-            
-            elseif networkCurrent == 3
-                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
-                    '.', 'Color', [0, 0.5, 0],'MarkerSize', 15);
-            
-            elseif networkCurrent == 7
-                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
-                    'b.','MarkerSize', 15);
                 
-            else
-                obj.dotMap = plot(obj.ax,lonCurrent,latCurrent,...
+            elseif obj.guiElements.checkboxVodafone.Value == true
+                obj.dotMap = plot(obj.ax,...
+                    obj.dataBase.celldata.lon(obj.getRelevantData()&obj.dataBase.celldata.networkCode==2),...
+                    obj.dataBase.celldata.lat(obj.getRelevantData()&obj.dataBase.celldata.networkCode==2),...
+                    'r.','MarkerSize', 15);
+                
+            elseif obj.guiElements.checkboxEPlus.Value == true
+                obj.dotMap = plot(obj.ax,...
+                    obj.dataBase.celldata.lon(obj.getRelevantData()&obj.dataBase.celldata.networkCode==3),...
+                    obj.dataBase.celldata.lat(obj.getRelevantData()&obj.dataBase.celldata.networkCode==3),...
+                    '.', 'Color', [0, 0.5, 0],'MarkerSize', 15);
+                
+            elseif obj.guiElements.checkboxTelefonica.Value == true
+                obj.dotMap = plot(obj.ax,...
+                    obj.dataBase.celldata.lon(obj.getRelevantData()&obj.dataBase.celldata.networkCode==7),...
+                    obj.dataBase.celldata.lat(obj.getRelevantData()&obj.dataBase.celldata.networkCode==7),...
+                    'b.','MarkerSize', 15);
+            elseif obj.guiElements.checkboxElse.Value == true
+                obj.dotMap = plot(obj.ax,...
+                    obj.dataBase.celldata.lon((obj.guiElements.checkboxTelefonica.Value ~= 1 &...
+                    obj.guiElements.checkboxTelefonica.Value ~= 2 &...
+                    obj.guiElements.checkboxTelefonica.Value ~= 3 &...
+                    obj.guiElements.checkboxTelefonica.Value ~= 7)&obj.getRelevantData()),...
+                    obj.dataBase.celldata.lat((obj.guiElements.checkboxTelefonica.Value ~= 1 &...
+                    obj.guiElements.checkboxTelefonica.Value ~= 2 &...
+                    obj.guiElements.checkboxTelefonica.Value ~= 3 &...
+                    obj.guiElements.checkboxTelefonica.Value ~= 7)&obj.getRelevantData()),...
                     'k.','MarkerSize', 15);
             end
+            obj.guiElements.checkboxElse.Value = 0;
+            
         end
         
         function drawHeatmap(obj)
@@ -370,7 +381,7 @@ classdef netVision < handle
                 % Addieren aller Sendemasten
                 F = F + A;
             end
-
+            
             obj.heatMap = image(obj.ax,x,y,10*log10(F/1e-12));
             colormap(obj.ax, 'jet');
             obj.heatMap.AlphaData = 0.3;
