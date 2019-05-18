@@ -90,6 +90,12 @@ classdef netVision < handle
             obj.guiElements.label_lonCoord.Layout.Row = 12;
             obj.guiElements.label_lonCoord.Layout.Column = [1 4];
             
+            obj.guiElements.label_Slider = uilabel(grid);
+            obj.guiElements.label_Slider.Text = ...
+                'Deckkraft der Heatmap: ';
+            obj.guiElements.label_Slider.Layout.Row = 14;
+            obj.guiElements.label_SLider.Layout.Column = [1 4];
+            
             
             % EDIT COORDS
             obj.guiElements.editLongMin = uieditfield(grid,"numeric");
@@ -182,12 +188,20 @@ classdef netVision < handle
             obj.guiElements.checkboxUMTS.Text = "UMTS";
             obj.guiElements.checkboxUMTS.Value = 0;
             obj.guiElements.checkboxUMTS.Layout.Row = 13;
-            obj.guiElements.checkboxUMTS.Layout.Column = [5 6];
+
+            obj.guiElements.checkboxUMTS.Layout.Column = [5 6];            
+            
+            % SLIDER FOR HEATMAP INTENSITY
+            obj.guiElements.SliderIntensity = uislider(grid);
+            obj.guiElements.SliderIntensity.Limits = [0 1];
+            obj.guiElements.SliderIntensity.Value = 0.3;
+            obj.guiElements.SliderIntensity.Layout.Row = 15;
+            obj.guiElements.SliderIntensity.Layout.Column = [1 4];
             
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Apply Changes";
-            applyChanges.Layout.Row = [15 16];
+            applyChanges.Layout.Row = [16];
             applyChanges.Layout.Column = [1 4];
             applyChanges.ButtonPushedFcn = @obj.apply;
             
