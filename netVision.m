@@ -54,47 +54,54 @@ classdef netVision < handle
             guiElements = struct();
             
             % NAMES FOR CONTROL ELEMENTS
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
                 'Longitudinal Koordinaten: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 1;
-            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
+            obj.guiElements.labels.Layout.Row = 1;
+            obj.guiElements.labels.Layout.Column = [1 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
                 'Lateral Koordinaten: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 3;
-            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
+            obj.guiElements.labels.Layout.Row = 3;
+            obj.guiElements.labels.Layout.Column = [1 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
                 'Anzeigeoptionen: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 5;
-            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
+            obj.guiElements.labels.Layout.Row = 5;
+            obj.guiElements.labels.Layout.Column = [1 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
-                'Karten Typ: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 6;
-            obj.guiElements.label_lonCoord.Layout.Column = [3 4];
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
+                'Kartentyp: ';
+            obj.guiElements.labels.Layout.Row = 6;
+            obj.guiElements.labels.Layout.Column = [3 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
                 'Netzwerkanbieter: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 8;
-            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
+            obj.guiElements.labels.Layout.Row = 8;
+            obj.guiElements.labels.Layout.Column = [1 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
                 'Netzwerkart: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 12;
-            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
+            obj.guiElements.labels.Layout.Row = 12;
+            obj.guiElements.labels.Layout.Column = [1 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
-            obj.guiElements.label_lonCoord = uilabel(grid);
-            obj.guiElements.label_lonCoord.Text = ...
+            obj.guiElements.labels = uilabel(grid);
+            obj.guiElements.labels.Text = ...
                 'Deckkraft der Heatmap: ';
-            obj.guiElements.label_lonCoord.Layout.Row = 14;
-            obj.guiElements.label_lonCoord.Layout.Column = [1 4];
+            obj.guiElements.labels.Layout.Row = 14;
+            obj.guiElements.labels.Layout.Column = [1 4];
+            obj.guiElements.labels.FontWeight = 'bold';
             
             
             % EDIT COORDS
@@ -169,7 +176,7 @@ classdef netVision < handle
             obj.guiElements.checkboxElse.Text = "Alle anderen Anbieter";
             obj.guiElements.checkboxElse.Value = 0;
             obj.guiElements.checkboxElse.Layout.Row = 11;
-            obj.guiElements.checkboxElse.Layout.Column = [1 2];
+            obj.guiElements.checkboxElse.Layout.Column = [1 4];
             
             % NETWORKS
             obj.guiElements.checkboxLTE = uicheckbox(grid);
@@ -205,15 +212,13 @@ classdef netVision < handle
             obj.guiElements.DropdownMapType.Items = ...
                 {'hot', 'osm', 'ocm', 'opm', 'landscape', 'outdoors'};
             obj.guiElements.DropdownMapType.Value = 'hot';
-            obj.guiElements.DropdownMapType.ValueChangedFcn = ...
-                @obj.setMapType;
             obj.guiElements.DropdownMapType.Layout.Row = 7;
             obj.guiElements.DropdownMapType.Layout.Column = [3 4];
 
 
             % BUTTONS
             applyChanges = uibutton(grid);
-            applyChanges.Text = "Apply Changes";
+            applyChanges.Text = "Änderungen annehmen";
             applyChanges.Layout.Row = 16;
             applyChanges.Layout.Column = [1 4];
             applyChanges.ButtonPushedFcn = @obj.apply;
@@ -230,6 +235,8 @@ classdef netVision < handle
                     "maxLat", obj.guiElements.editLatMax.Value);
             end
             
+            % change the style of the map if choosed
+            obj.myMap.style = obj.guiElements.DropdownMapType.Value;
             % delete current overlays
             obj.eraseOverlays()
             
