@@ -306,7 +306,8 @@ classdef netVision < handle
             end
             
             % combine all logical veectors
-            relevantData =  relevantCoords & relevantNetwork & relevantNetworkType;
+            relevantData =  relevantCoords & relevantNetwork & ...
+                relevantNetworkType;
         end
         
         function drawDots(obj)
