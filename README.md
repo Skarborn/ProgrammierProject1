@@ -1,5 +1,5 @@
 # Programming Task via Matlab creating a modified Map
-As part of the university lecture "Applied Programming" (dt.:"Angewandtes 
+As part of the university lecture "Applied Programming" (dt.: "Angewandtes 
 Programmieren") from the studies of audiology in the Jade-Hochschule 
 Oldenburg, it was the task to create a program basing upon the given 
 "Map.m" and a table of measured network reception data "celldata.mat" 
@@ -20,5 +20,17 @@ To get this program, all you have to do is, download the zip-file of the
 [GitHub-homepage](https://github.com/Skarborn/ProgrammierProject1.git)
 and run it on Matlab including the path from where it has to run.
 When you do not own Matlab in any version, you can download it at the 
-owner's expense on the [MathWorks-homepage]
-(https://www.mathworks.de/downloads).
+owner's expense on the 
+[MathWorks-homepage](https://www.mathworks.de/downloads).
+
+## Running the Program
+
+The "ProgrammierProject1"-file consists of nine different files, but to run
+the main project, all you have to do is to type in "netVision" in the 
+Command Window or to press the in the right direction pointing green 
+triangle after opening the netVision.m.
+It may take some time until the window with the map and the command center
+appears. 
+
+### Defining the parametres
+
