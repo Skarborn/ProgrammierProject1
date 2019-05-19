@@ -14,7 +14,7 @@ networking system and provider he wants to see. In addition to that it is
 not only possible to get a map of Oldenburg, but also of every other town
 in Germany with this display options.
 
-##Getting Started
+## Getting Started
 
 To get this program, all you have to do is, download the zip-file of the
 [GitHub-homepage](https://github.com/Skarborn/ProgrammierProject1.git)
