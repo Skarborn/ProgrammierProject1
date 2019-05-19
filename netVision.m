@@ -1,50 +1,53 @@
 classdef netVision < handle
-    %NETVISION visualizes the network coverage in Germany
-    %   NETVISION uses MAP for plotting a map. The data necessary to
-    %   visualize the network coverage is drawn from celldata.mat, which
-    %   can be downloaded from https://opencellid.org.
-    %
-    %   The user can specify, what will be shown on the map.
-    %   As long as at least one network provider and one network type
-    %   is selected, a heatmap and/or a map showing the position of
-    %   transmitter towers can be drawn. Transmitter tower will be
-    %   colored according to the network provider (Telekom = pink,
-    %   Vodafone = red, EPlus = green, Telefonica = blue, else = black).
-    %   The user can also set the transparency of the heatmap to
-    %   his/her liking.
-    %
-    %   Some settings will change the properties of the MAP.
-    %   Coordinates will be changed as specified in the edit fields.
-    %   The MAP style can also be changed in a dropdown.
-    %
-    %   NETVISION() creates a uifigure containing the axis the MAP is
-    %   drawn on. The initial coordinates point to Oldenburg.
-    %   Since no input parameters are required, NETVISION can be run
-    %   just like a script.
-    
-    %   Copyright (c) 2019,
-    %   Martin Berdau, Johannes Ruesing, Tammo Sander
-    %   This code is public domain
+%NETVISION visualizes the network coverage in Germany
+%   NETVISION uses MAP for plotting a map. The data necessary to
+%   visualize the network coverage is drawn from celldata.mat, which
+%   can be downloaded from https://opencellid.org.
+%
+%   The user can specify, what will be shown on the map.
+%   As long as at least one network provider and one network type
+%   is selected, a heatmap and/or a map showing the position of
+%   transmitter towers can be drawn. Transmitter tower will be
+%   colored according to the network provider (Telekom = pink,
+%   Vodafone = red, EPlus = green, Telefonica = blue, else = black).
+%   The user can also set the transparency of the heatmap to
+%   his/her liking.
+%
+%   Some settings will change the properties of the MAP.
+%   Coordinates will be changed as specified in the edit fields.
+%   The MAP style can also be changed in a dropdown.
+%
+%   NETVISION() creates a uifigure containing the axis the MAP is
+%   drawn on. The initial coordinates point to Oldenburg.
+%   Since no input parameters are required, NETVISION can be run
+%   just like a script.
+
+%   Copyright (c) 2019,
+%   Martin Berdau, Johannes Ruesing, Tammo Sander
+%   This code is public domain
     
     properties
-        ax
+        ax % axis object used for MAP
         
-        dataBase
+        dataBase % contains celldata
         
-        myMap
-        heatMap
+        myMap   % contains MAP
+        heatMap % contains image of heatmap
         
+        % line objects of transmitter towers
         dotMapTelekom
         dotMapVodafone
         dotMapEPlus
         dotMapTelefonica
         dotMapElse
         
-        guiElements
+        guiElements % contains all GUI elements
     end
     
     methods
         function obj = netVision()
+        %NETVISION initialises the application
+        
             % read in celldata
             obj.dataBase = load("celldata.mat");
             
@@ -71,12 +74,8 @@ classdef netVision < handle
                 "maxLat", lateralMax);
             
             obj.myMap = Map(initialCoords,'hot',obj.ax,-2);
-            %hold on
             
-            % GENERATE GUI ELEMENTS
-            
-            % edit fields for entering coordinates
-            
+            % GENERATE GUI ELEMENTS            
             guiElements = struct();
             
             % NAMES FOR CONTROL ELEMENTS
@@ -160,7 +159,6 @@ classdef netVision < handle
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
             % CHECKBOXES
-            
             obj.guiElements.checkboxDots = uicheckbox(grid);
             obj.guiElements.checkboxDots.Text = "Funktürme";
             obj.guiElements.checkboxDots.Value = 0;
@@ -252,8 +250,10 @@ classdef netVision < handle
             
         end
         
-        function apply(obj, source, ~)
-            
+        function apply(obj, ~, ~)
+        %APPLY changes the coords, draws transmitter tower positions
+        % and a heatmap depending on the settings made in the GUI.
+        
             obj.myMap.coords = struct(...
                 "minLon", obj.guiElements.editLongMin.Value, ...
                 "maxLon", obj.guiElements.editLongMax.Value, ...
@@ -282,7 +282,9 @@ classdef netVision < handle
         end
         
         function relevantData = getRelevantData(obj)
-            % generate logical vectors for filtering purposes
+        %RELEVANTDATA hands back a logical vector specifying
+        % which values from the celldata are relevant according
+        % to the settings made in the GUI.
             
             relevantCoords = ...
                 obj.guiElements.editLongMin.Value <= ...
@@ -297,6 +299,8 @@ classdef netVision < handle
             relevantNetwork = zeros(length(relevantCoords),1);
             relevantNetworkType = zeros(length(relevantCoords),1);
             
+            % Filtering according to network provider. Multiple
+            % providers can be selected at the same time
             if obj.guiElements.checkboxTelekom.Value == true
                 relevantNetwork = relevantNetwork |...
                     (obj.dataBase.celldata.networkCode == 1);
@@ -320,6 +324,8 @@ classdef netVision < handle
                     (obj.dataBase.celldata.networkCode > 7));
             end
             
+            % Filtering according to network type. Multiple
+            % types can be selected at the same time.
             if obj.guiElements.checkboxLTE.Value == true
                 relevantNetworkType = (relevantNetworkType | ...
                     obj.dataBase.celldata.network == 'LTE');
@@ -333,15 +339,16 @@ classdef netVision < handle
                     obj.dataBase.celldata.network == 'UMTS');
             end
             
-            % combine all logical veectors
+            % combining all logical vectors
             relevantData =  relevantCoords & relevantNetwork & ...
                 relevantNetworkType;
         end
         
         function drawDots(obj)
-            % plot transmitter tower in different colors according
-            % to network provider
+        %DRAWDOTS plots relevant transmitter towers in different
+        % colors according to network provider.
             
+            % plotting Telekom transmitter towers
             if obj.guiElements.checkboxTelekom.Value == true
                 obj.dotMapTelekom = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -351,6 +358,7 @@ classdef netVision < handle
                     'm.','MarkerSize',15);
             end
             
+            % plotting Vodafone transmitter towers
             if obj.guiElements.checkboxVodafone.Value == true
                 obj.dotMapVodafone = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -360,6 +368,7 @@ classdef netVision < handle
                     'r.','MarkerSize', 15);
             end
             
+            % plotting EPlus transmitter towers
             if obj.guiElements.checkboxEPlus.Value == true
                 obj.dotMapEPlus = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -369,6 +378,7 @@ classdef netVision < handle
                     '.', 'Color', [0, 0.5, 0],'MarkerSize', 15);
             end
             
+            % plotting Telefonica transmitter towers
             if obj.guiElements.checkboxTelefonica.Value == true
                 obj.dotMapTelefonica = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -378,6 +388,7 @@ classdef netVision < handle
                     'b.','MarkerSize', 15);
             end
             
+            % plotting other transmitter towers
             if obj.guiElements.checkboxElse.Value == true
                 obj.dotMapElse = plot(obj.ax, ...
                     obj.dataBase.celldata.lon(( ...
@@ -397,30 +408,35 @@ classdef netVision < handle
             
         end
         function setAlphaData(obj, event, ~)
+        %SETALPHADATA reacts to heatmap slider controling the
+        % transparency of the heatmap
+        
             obj.guiElements.SliderIntensity.Value = event.Value;
             obj.heatMap.AlphaData = obj.guiElements.SliderIntensity.Value;
         end
         
         function drawHeatmap(obj)
-            
-            % generate current vectors
+        %DRAWHEATMAP draws a heatmap according to the relevant data.
+
+            % get relevant coordinates of transmitter towers
             lonCurrent = obj.dataBase.celldata.lon(obj.getRelevantData());
             latCurrent = obj.dataBase.celldata.lat(obj.getRelevantData());
             
+            % get current size of axis in pixels
             xPixelWidth = obj.ax.Position(3);
             yPixelWidth = obj.ax.Position(4);
             
-            % width of current axis in degree
+            % calculate width of current axis in degree
             long_width = obj.guiElements.editLongMax.Value -...
                 obj.guiElements.editLongMin.Value;
             lat_width = obj.guiElements.editLatMax.Value -...
                 obj.guiElements.editLatMin.Value;
             
-            % width of pixel in degree
+            % calculate width of one pixel in degree
             degProPixLon = long_width/xPixelWidth;
             degProPixLat = lat_width/yPixelWidth;
             
-            % x und y vektoren in grad-abstaenden
+            % x and y vectors with step size of one pixel in degree
             x = obj.guiElements.editLongMin.Value : ...
                 degProPixLon : obj.guiElements.editLongMax.Value;
             y = obj.guiElements.editLatMax.Value : ...
@@ -435,7 +451,7 @@ classdef netVision < handle
             % sendestaerke-von-basisstationen/
             P = 7;
             
-            % determine limit for intensity, since values close to
+            % determining limit for intensity, since values close to
             % transmitter tower will go up to infinity
             intensityLimit = 1e-5;
             
@@ -459,6 +475,7 @@ classdef netVision < handle
                 F = F + A;
             end
             
+            % generate heatmap as image and set colormap to jet
             obj.heatMap = image(obj.ax,x,y,10*log10(F/1e-12));
             colormap(obj.ax, 'jet');
             obj.heatMap.AlphaData =...
@@ -468,6 +485,9 @@ classdef netVision < handle
         end
         
         function eraseOverlays(obj)
+        %ERASEOVERLAYS deletes existing overlays, so they won't stay
+        % on axis and new ones can be generated.
+        
             delete(obj.heatMap);
             delete(obj.dotMapTelekom);
             delete(obj.dotMapVodafone);
