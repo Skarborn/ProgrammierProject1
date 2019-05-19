@@ -1,4 +1,30 @@
 classdef netVision < handle
+    %NETVISION visualizes the network coverage in Germany
+    %   NETVISION uses MAP for plotting a map. The data necessary to
+    %   visualize the network coverage is drawn from celldata.mat, which
+    %   can be downloaded from https://opencellid.org.
+    %
+    %   The user can specify, what will be shown on the map.
+    %   As long as at least one network provider and one network type
+    %   is selected, a heatmap and/or a map showing the position of
+    %   transmitter towers can be drawn. Transmitter tower will be
+    %   colored according to the network provider (Telekom = pink,
+    %   Vodafone = red, EPlus = green, Telefonica = blue, else = black).
+    %   The user can also set the transparency of the heatmap to
+    %   his/her liking.
+    %
+    %   Some settings will change the properties of the MAP.
+    %   Coordinates will be changed as specified in the edit fields.
+    %   The MAP style can also be changed in a dropdown.
+    %
+    %   NETVISION() creates a uifigure containing the axis the MAP is
+    %   drawn on. The initial coordinates point to Oldenburg.
+    %   Since no input parameters are required, NETVISION can be run
+    %   just like a script.
+    
+    %   Copyright (c) 2019,
+    %   Martin Berdau, Johannes Ruesing, Tammo Sander
+    %   This code is public domain
     
     properties
         ax
@@ -117,7 +143,7 @@ classdef netVision < handle
             obj.guiElements.editLongMax.Value = longitudinalMax;
             obj.guiElements.editLongMax.Layout.Row = 2;
             obj.guiElements.editLongMax.Layout.Column = 2;
-            obj.guiElements.editLongMax.Tooltip = "max longitudinal";       
+            obj.guiElements.editLongMax.Tooltip = "max longitudinal";
             
             obj.guiElements.editLatMin = uieditfield(grid,"numeric");
             obj.guiElements.editLatMin.Limits = [0 360];
@@ -133,8 +159,8 @@ classdef netVision < handle
             obj.guiElements.editLatMax.Layout.Column = 2;
             obj.guiElements.editLatMax.Tooltip = "max lateral";
             
-            % CHECKBOXES 
-                        
+            % CHECKBOXES
+            
             obj.guiElements.checkboxDots = uicheckbox(grid);
             obj.guiElements.checkboxDots.Text = "Funktürme";
             obj.guiElements.checkboxDots.Value = 0;
@@ -195,8 +221,8 @@ classdef netVision < handle
             obj.guiElements.checkboxUMTS.Text = "UMTS";
             obj.guiElements.checkboxUMTS.Value = 0;
             obj.guiElements.checkboxUMTS.Layout.Row = 13;
-
-            obj.guiElements.checkboxUMTS.Layout.Column = [5 6];            
+            
+            obj.guiElements.checkboxUMTS.Layout.Column = [5 6];
             
             % SLIDER FOR HEATMAP INTENSITY
             obj.guiElements.SliderIntensity = uislider(grid);
@@ -204,6 +230,7 @@ classdef netVision < handle
             obj.guiElements.SliderIntensity.Value = 0.3;
             obj.guiElements.SliderIntensity.Layout.Row = 15;
             obj.guiElements.SliderIntensity.Layout.Column = [1 4];
+            obj.guiElements.SliderIntensity.Enable = 'off';
             obj.guiElements.SliderIntensity.ValueChangedFcn = ...
                 @obj.setAlphaData;
             
@@ -214,8 +241,8 @@ classdef netVision < handle
             obj.guiElements.DropdownMapType.Value = 'hot';
             obj.guiElements.DropdownMapType.Layout.Row = 7;
             obj.guiElements.DropdownMapType.Layout.Column = [3 4];
-
-
+            
+            
             % BUTTONS
             applyChanges = uibutton(grid);
             applyChanges.Text = "Änderungen annehmen";
@@ -226,14 +253,12 @@ classdef netVision < handle
         end
         
         function apply(obj, source, ~)
-            % Button "Apply Changes" causes update of axis
-            if (source.Text == "Apply Changes")
-                obj.myMap.coords = struct(...
-                    "minLon", obj.guiElements.editLongMin.Value, ...
-                    "maxLon", obj.guiElements.editLongMax.Value, ...
-                    "minLat", obj.guiElements.editLatMin.Value, ...
-                    "maxLat", obj.guiElements.editLatMax.Value);
-            end
+            
+            obj.myMap.coords = struct(...
+                "minLon", obj.guiElements.editLongMin.Value, ...
+                "maxLon", obj.guiElements.editLongMax.Value, ...
+                "minLat", obj.guiElements.editLatMin.Value, ...
+                "maxLat", obj.guiElements.editLatMax.Value);
             
             % change the style of the map if choosed
             obj.myMap.style = obj.guiElements.DropdownMapType.Value;
@@ -248,6 +273,9 @@ classdef netVision < handle
             % if checkbox is ticked, plot heatmap
             if obj.guiElements.checkboxHeatmap.Value == true
                 obj.drawHeatmap()
+                obj.guiElements.SliderIntensity.Enable = 'on';
+            else
+                obj.guiElements.SliderIntensity.Enable = 'off';
             end
             
             
@@ -313,7 +341,7 @@ classdef netVision < handle
         function drawDots(obj)
             % plot transmitter tower in different colors according
             % to network provider
-
+            
             if obj.guiElements.checkboxTelekom.Value == true
                 obj.dotMapTelekom = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -322,7 +350,7 @@ classdef netVision < handle
                     obj.dataBase.celldata.networkCode==1), ...
                     'm.','MarkerSize',15);
             end
-                
+            
             if obj.guiElements.checkboxVodafone.Value == true
                 obj.dotMapVodafone = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -331,7 +359,7 @@ classdef netVision < handle
                     obj.dataBase.celldata.networkCode==2), ...
                     'r.','MarkerSize', 15);
             end
-                
+            
             if obj.guiElements.checkboxEPlus.Value == true
                 obj.dotMapEPlus = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -340,7 +368,7 @@ classdef netVision < handle
                     obj.dataBase.celldata.networkCode==3), ...
                     '.', 'Color', [0, 0.5, 0],'MarkerSize', 15);
             end
-                
+            
             if obj.guiElements.checkboxTelefonica.Value == true
                 obj.dotMapTelefonica = plot(obj.ax,...
                     obj.dataBase.celldata.lon(obj.getRelevantData() & ...
@@ -433,6 +461,8 @@ classdef netVision < handle
             
             obj.heatMap = image(obj.ax,x,y,10*log10(F/1e-12));
             colormap(obj.ax, 'jet');
+            obj.heatMap.AlphaData =...
+                obj.guiElements.SliderIntensity.Value;
             obj.heatMap.CDataMapping = 'scaled';
             
         end
