@@ -24,7 +24,7 @@ classdef netVision < handle
 
 %   Copyright (c) 2019,
 %   Martin Berdau, Johannes Ruesing, Tammo Sander
-%   This code is public domain
+%   This Code is Public Domain
     
     properties
         ax % axis object used for MAP
