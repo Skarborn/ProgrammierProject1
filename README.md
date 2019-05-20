@@ -86,12 +86,12 @@ netVision.m-file, the main script.
 ### Structure of netVision
 * **Properties** (Z.30-45)
 * **Functions**: 
-netVision (Z.48-251),
-apply (Z.253-283),
-relevantData(Z.284-345),
-drawDots(Z.347-409), 
-setAlphaData (Z.410-416),
-drawHeatmap (Z.418-485), 
-eraseOverlays (Z.487-496)
+* netVision (Z.48-251),
+* apply (Z.253-283),
+* relevantData(Z.284-345),
+* drawDots(Z.347-409), 
+* setAlphaData (Z.410-416),
+* drawHeatmap (Z.418-485), 
+* eraseOverlays (Z.487-496)
 
  
