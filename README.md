@@ -27,7 +27,7 @@ owner's expense on the
 The "ProgrammierProject1"-file consists of nine different files, but to run
 the main project, the user has only to type
 ```
-netVision
+>> netVision
 ```
 in the Command Window or to press the in the right direction pointing green 
 triangle after opening the netVision.m.
@@ -45,4 +45,26 @@ belong to the different network providers of the different
 network kinds are shown. 
 After pressing the "Änderungen annehmen"-button the changes are registered 
 and the program runs with the new parametres.
-Moreover, it is choosable which covering power the heatmap has.
+Moreover, it is choosable with a slider at the bottom of the window
+which covering power the heatmap has.
+
+## Built With
+* [Matlab](https://www.mathworks.de/downloads) - Programed and runned with
+
+## Versioning
+Version 1.0
+This program is finished and therefore will not be updated again.
+
+## Authors
+* **Martin Berdau** - *Head Programming Mastermind* 
+* **Tammo Sander** - *Programming Mastermind* - 
+[TammoSan](https://github.com/TammoSan)
+* **Johannes Rüsing** - *Programmer*
+[Skarborn](https://github.com/Skarborn)
+
+## License
+This Code is Public Domain.
+
+## Acknowledgements
+
+ 
