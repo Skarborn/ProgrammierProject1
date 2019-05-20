@@ -38,7 +38,9 @@ appears.
 To get the wished information, the parametres have to be defined in the 
 command center on the left-hand side of the window. For changing the 
 coordinates, one of four applicable text edit fields has to be selected and
-the corresponding value to be filled in. By ticking the checkboxes 
+the corresponding value to be filled in. The edit fields on the
+left-hand side are the least coordinates while the edit fields on the
+right-hand side are the maximal coordinates. By ticking the checkboxes 
 underneath, the display options are selectable in any way.
 It is free to choose whether the heatmap or the radio mast places, which
 belong to the different network providers of the different
@@ -88,8 +90,8 @@ netVision.m-file, the main script.
 * **Functions**: 
 * netVision (Z.48-251),
 * apply (Z.253-283),
-* relevantData(Z.284-345),
-* drawDots(Z.347-409), 
+* relevantData (Z.284-345),
+* drawDots (Z.347-409), 
 * setAlphaData (Z.410-416),
 * drawHeatmap (Z.418-485), 
 * eraseOverlays (Z.487-496)
