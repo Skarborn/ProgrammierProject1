@@ -42,11 +42,18 @@ the corresponding value to be filled in. By ticking the checkboxes
 underneath, the display options are selectable in any way.
 It is free to choose whether the heatmap or the radio mast places, which
 belong to the different network providers of the different
-network kinds are shown. 
+network kinds are shown. It does not make sense to tick the checkbox
+of a network provider and a network kind without ticking the 
+"Funktürme"-checkbox.
 After pressing the "Änderungen annehmen"-button the changes are registered 
 and the program runs with the new parametres.
 Moreover, it is choosable with a slider at the bottom of the window
 which covering power the heatmap has.
+For example if the user is interested into the place where the E-Plus-BTS
+stand and how their impact is with LTE, the checkboxes "Funktürme",
+"Heatmap", "E-Plus" and "LTE" have to be marked, to get an right result.
+With the intention to see only the heatmap it is possible by putting the 
+slider for the transparency of the heatmap on the value "1".
 
 ## Built With
 * [Matlab](https://www.mathworks.de/downloads) - Programed and runned with
@@ -75,5 +82,16 @@ draw the BTS was made and continued in drawBTS.m. To draw the heatmap,
 first createHeatmap.m was designed, but it got superseded by drawHeatmap.m.
 After each of the designs was finished, it got implemented in the 
 netVision.m-file, the main script.
+
+### Structure of netVision
+* **Properties** (Z.30-45)
+* **Functions**: 
+netVision (Z.48-251),
+apply (Z.253-283),
+relevantData(Z.284-345),
+drawDots(Z.347-409), 
+setAlphaData (Z.410-416),
+drawHeatmap (Z.418-485), 
+eraseOverlays (Z.487-496)
 
  
