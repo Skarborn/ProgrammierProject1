@@ -2,12 +2,12 @@
 The program is the result of the task to create a script basing upon the 
 given "Map.m" and a table of measured network reception data "celldata.mat" 
 which draws a heatmap of Oldenburg and also shows the positions of the 
-radio masts.
+basis transmitter stations (BTS).
 It was free to include whatever fits, so some features were added.
-Besides the distance to the nearest radio mast, the table consists of 
+Besides the distance to the nearest BTS, the table consists of 
 information to which network provider the mast belongs and what sort of 
 network is being used (UMTS, LTE or GSM). 
-With this program the user is free to choose which radio masts of which 
+With this program the user is free to choose which BTS of which 
 networking system and provider he wants to see. In addition to that it is
 not only possible to get a map of Oldenburg, but also of every other town
 in Germany with this display options.
@@ -56,15 +56,24 @@ Version 1.0
 This program is finished and therefore will not be updated again.
 
 ## Authors
-* **Martin Berdau** - *Head Programming Mastermind* 
+* **Martin Berdau** - *Head Programming Mastermind* -
+[MartinBerdau](https://github.com/MartinBerdau)
 * **Tammo Sander** - *Programming Mastermind* - 
 [TammoSan](https://github.com/TammoSan)
-* **Johannes Rüsing** - *Programmer*
+* **Johannes Rüsing** - *Programmer* -
 [Skarborn](https://github.com/Skarborn)
 
 ## License
 This Code is Public Domain.
 
 ## Acknowledgements
+Besides the main script, the celldata-table and the Map-script, there are 
+some other .m-files which are used to reproduce what worksteps have been 
+done. The development of the whole project started in the test_map.m where
+the first structure and idea took place. In TesteMap.m the first try to
+draw the BTS was made and continued in drawBTS.m. To draw the heatmap, 
+first createHeatmap.m was designed, but it got superseded by drawHeatmap.m.
+After each of the designs was finished, it got implemented in the 
+netVision.m-file, the main script.
 
  
