@@ -65,9 +65,9 @@ Version 1.0
 This program is finished and therefore will not be updated again.
 
 ## Authors
-* **Martin Berdau** - *Head Programming Mastermind* -
+* **Martin Berdau** - *Programmer* -
 [MartinBerdau](https://github.com/MartinBerdau)
-* **Tammo Sander** - *Programming Mastermind* - 
+* **Tammo Sander** - *Programmer* - 
 [TammoSan](https://github.com/TammoSan)
 * **Johannes Rüsing** - *Programmer* -
 [Skarborn](https://github.com/Skarborn)
