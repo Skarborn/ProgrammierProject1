@@ -75,7 +75,7 @@ This program is finished and therefore will not be updated again.
 ## License
 This Code is Public Domain.
 
-## Acknowledgements
+## Remarks
 Besides the main script, the celldata-table and the Map-script, there are 
 some other .m-files which are used to reproduce what worksteps have been 
 done. The development of the whole project started in the test_map.m where
@@ -83,7 +83,8 @@ the first structure and idea took place. In TesteMap.m the first try to
 draw the BTS was made and continued in drawBTS.m. To draw the heatmap, 
 first createHeatmap.m was designed, but it got superseded by drawHeatmap.m.
 After each of the designs was finished, it got implemented in the 
-netVision.m-file, the main script.
+netVision.m-file, the main script. So these mentioned files are not part 
+of the final product.
 
 ### Structure of netVision
 * **Properties** (Z.30-45)
